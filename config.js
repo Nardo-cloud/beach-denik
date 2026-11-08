@@ -1,7 +1,7 @@
 // Propojení s databází Supabase.
-// Hodnoty najdeš v Supabase: Project Settings → API (Project URL a anon public key).
-// Anon klíč je veřejný a smí být v kódu – data chrání pravidla přístupu v databázi.
+// Hodnoty najdeš v Supabase: Project Settings → Data API (Project URL) a API Keys (publishable / anon key).
+// Tento klíč je veřejný a smí být v kódu – data chrání pravidla přístupu v databázi.
 window.DENIK_CONFIG = {
-  supabaseUrl: "",      // např. "https://abcdefghijk.supabase.co"
-  supabaseAnonKey: ""   // dlouhý řetězec začínající "eyJ..."
+  supabaseUrl: "https://cgdmpkjilvrbxoxoaeyk.supabase.co",
+  supabaseAnonKey: "sb_publishable_BYH7h0vavxw2mouqkMDNzQ_GjmgKpez"
 };
