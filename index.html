@@ -359,6 +359,12 @@ svg text{font-family:var(--f-num);font-size:9.5px}
 .auth .save{padding:13px;font-size:15px}
 .logout{font-family:var(--f-num);font-size:11px;margin-top:4px;align-self:flex-start;padding:0}
 body.locked nav.tabs,body.locked #view,body.locked #banner,body.locked #coachbar{display:none!important}
+.folded{display:flex;align-items:center;gap:12px;border:1px solid var(--line2);padding:12px}
+.folded .fs-ok{flex:none;width:28px;height:28px;display:grid;place-items:center;background:var(--good);color:var(--bg);font-weight:800}
+.folded .fs-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.folded .fs-main{font-family:var(--f-display);font-weight:800;font-size:18px}
+.folded .fs-sub{font-family:var(--f-num);font-size:12px;color:var(--muted)}
+.folded .skip{flex:none;padding:8px 12px}
 </style>
 </head>
 <body class="locked">
@@ -608,9 +614,21 @@ function renderDay(force){
     for(const k of ["sand","gym"])$("#"+k+"Tot").textContent=day.off?.[k]?day.off[k]:day[k].length?`${day[k].length}× · ${fmtMin(sumMin(day[k]))}`:"";
     const c=mealsCount(day); $("#mealTot").textContent=c?`${c}/5 jídel`:"";
   }
+  const saved0=getDay(id);
+  const folded={sand:!!(saved0&&(saved0.off?.sand||(saved0.sand||[]).length)),gym:!!(saved0&&(saved0.off?.gym||(saved0.gym||[]).length))};
+  function summary(kind){
+    if(day.off?.[kind])return `<span class="fs-main">Volno</span><span class="fs-sub">${esc(day.off[kind])}</span>`;
+    const L=day[kind]||[];
+    return `<span class="fs-main">${L.length}× · ${fmtMin(sumMin(L))}</span><span class="fs-sub">${L.map(x=>[x.rpe?"náročnost "+x.rpe:"",x.feel?"pocit "+TFEEL[x.feel].toLowerCase():"",kind==="gym"&&(x.focus||[]).length?x.focus.join(", "):""].filter(Boolean).join(" · ")).filter(Boolean).join(" | ")}</span>`;
+  }
   function list(kind){
     const el=$("#"+kind+"List"); day.off=day.off||{}; day.go=day.go||{};
     const off=day.off[kind], on=!off&&(day.go[kind]||day[kind].length>0);
+    if(folded[kind]&&(on||off)){
+      el.innerHTML=`<div class="folded"><span class="fs-ok" aria-hidden="true">✓</span><div class="fs-txt">${summary(kind)}</div><button type="button" class="skip" id="${kind}-edit">Upravit</button></div>`;
+      $("#"+kind+"-edit").onclick=()=>{folded[kind]=false;list(kind)};
+      return;
+    }
     const seg=`<div class="seg" role="group" aria-label="Trénink nebo volno?"><button type="button" class="yes" id="${kind}-yes" aria-pressed="${!!on}">Trénink</button><button type="button" class="no" id="${kind}-no" aria-pressed="${!!off}">Volno</button></div>`;
     let body="";
     if(off){
@@ -648,7 +666,7 @@ function renderDay(force){
     const sv=$("#"+kind+"-save"); if(sv)sv.onclick=async()=>{
       clearTimeout(pending["days"+id]); dirty[id]=JSON.parse(JSON.stringify(day));
       sv.disabled=true; sv.textContent="Ukládám…";
-      try{await flush(id,"days"); sv.classList.add("done"); sv.textContent="Uloženo ✓"}
+      try{await flush(id,"days"); folded[kind]=true; list(kind); return}
       catch(e){sv.textContent="Neuloženo – zkusit znovu"}
       sv.disabled=false;
     };
