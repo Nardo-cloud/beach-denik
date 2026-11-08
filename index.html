@@ -365,6 +365,7 @@ body.locked nav.tabs,body.locked #view,body.locked #banner,body.locked #coachbar
 .folded .fs-main{font-family:var(--f-display);font-weight:800;font-size:18px}
 .folded .fs-sub{font-family:var(--f-num);font-size:12px;color:var(--muted)}
 .folded .skip{flex:none;padding:8px 12px}
+.seg.seg3b{grid-template-columns:repeat(3,1fr)}
 </style>
 </head>
 <body class="locked">
@@ -499,7 +500,7 @@ const fmtH=h=>fmtMin(Math.round((h||0)*60/5)*5);
 const num=v=>{const n=parseFloat(String(v).replace(",","."));return isFinite(n)&&n>0?n:0};
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
-let state={cur:key(today()),weekStart:key(monday(today())),month:key(today()).slice(0,7)};
+let state={cur:key(today()),weekStart:key(monday(today())),month:key(today()).slice(0,7),teamMode:"d"};
 let docs={};           // days: id -> body
 let weeks={};          // week reviews: monday id -> body
 const wdirty={};
@@ -854,7 +855,8 @@ function renderCoach(){
   $("#view").innerHTML=`
   <div class="banner"><span>Tuhle záložku vidíš jen ty jako trenér. Hráčky ji nemají a navzájem si data nevidí.</span></div>
   <h3 class="sec" style="margin-top:4px">Přehled hráček</h3>
-  <div class="seg" role="group" aria-label="Období" style="margin-bottom:8px"><button type="button" class="yes" id="tm7" aria-pressed="${state.teamMode!=="m"}">Posledních 7 dní</button><button type="button" class="yes" id="tmM" aria-pressed="${state.teamMode==="m"}">Měsíc</button></div>
+  <div class="seg seg3b" role="group" aria-label="Období" style="margin-bottom:8px"><button type="button" class="yes" id="tmD" aria-pressed="${state.teamMode==="d"}">Den</button><button type="button" class="yes" id="tm7" aria-pressed="${state.teamMode!=="m"&&state.teamMode!=="d"}">7 dní</button><button type="button" class="yes" id="tmM" aria-pressed="${state.teamMode==="m"}">Měsíc</button></div>
+  <div class="rangebar" id="tdBar" ${state.teamMode==="d"?"":"hidden"}><button class="icon" id="tdp" aria-label="Předchozí den">‹</button><div class="lbl" id="tdLbl"></div><button class="icon" id="tdn" aria-label="Další den">›</button></div>
   <div class="rangebar" id="tmBar" ${state.teamMode==="m"?"":"hidden"}><button class="icon" id="tmp" aria-label="Předchozí měsíc">‹</button><div class="lbl" id="tmLbl"></div><button class="icon" id="tmn" aria-label="Další měsíc">›</button></div>
   <div id="teamTbl"><p class="note">Načítám hráčky…</p></div>
   <div id="coachCharts"></div>
@@ -870,8 +872,11 @@ function renderCoach(){
   document.querySelectorAll("[data-w]").forEach(r=>r.onclick=()=>{state.weekStart=r.dataset.w;location.hash="#tyden"});
   wireExport(); renderLog();
   state.teamMonth=state.teamMonth||key(today()).slice(0,7);
-  const setMode=m=>{state.teamMode=m;$("#tm7").setAttribute("aria-pressed",String(m!=="m"));$("#tmM").setAttribute("aria-pressed",String(m==="m"));$("#tmBar").hidden=m!=="m";renderTeam()};
-  $("#tm7").onclick=()=>setMode("7"); $("#tmM").onclick=()=>setMode("m");
+  const setMode=m=>{state.teamMode=m;$("#tmD").setAttribute("aria-pressed",String(m==="d"));$("#tm7").setAttribute("aria-pressed",String(m==="7"));$("#tmM").setAttribute("aria-pressed",String(m==="m"));$("#tmBar").hidden=m!=="m";$("#tdBar").hidden=m!=="d";renderTeam()};
+  $("#tmD").onclick=()=>setMode("d"); $("#tm7").onclick=()=>setMode("7"); $("#tmM").onclick=()=>setMode("m");
+  state.teamDay=state.teamDay||key(today());
+  const mvd=n=>{state.teamDay=key(addDays(parse(state.teamDay),n));renderTeam()};
+  $("#tdp").onclick=()=>mvd(-1); $("#tdn").onclick=()=>mvd(1);
   const mv=n=>{const [y,m]=state.teamMonth.split("-").map(Number);state.teamMonth=key(new Date(y,m-1+n,1)).slice(0,7);renderTeam()};
   $("#tmp").onclick=()=>mv(-1); $("#tmn").onclick=()=>mv(1);
   renderTeam();
@@ -909,9 +914,10 @@ async function renderTeam(){
   const el=$("#teamTbl"); if(!el)return;
   if(!DB){el.innerHTML="";return}
   if(!players.length){el.innerHTML=`<p class="note">Zatím tu není žádná hráčka. Pošli hráčce odkaz na aplikaci. Po prvním přihlášení se tu objeví.</p>`;return}
-  const t=today(), isM=state.teamMode==="m";
+  const t=today(), isM=state.teamMode==="m", isD=state.teamMode==="d";
   let last, total;
-  if(isM){const [y,m]=state.teamMonth.split("-").map(Number);total=new Date(y,m,0).getDate();last=[...Array(total)].map((_,i)=>key(new Date(y,m-1,i+1)));const L=$("#tmLbl");if(L)L.textContent=MONTHS[m-1]+" "+y}
+  if(isD){total=1;last=[state.teamDay||key(t)];const dd=parse(last[0]);const L=$("#tdLbl");if(L)L.textContent=`${DAYS[dow(dd)]} ${dd.getDate()}. ${MONTHS_G[dd.getMonth()]}${last[0]===key(t)?" · dnes":""}`}
+  else if(isM){const [y,m]=state.teamMonth.split("-").map(Number);total=new Date(y,m,0).getDate();last=[...Array(total)].map((_,i)=>key(new Date(y,m-1,i+1)));const L=$("#tmLbl");if(L)L.textContent=MONTHS[m-1]+" "+y}
   else{total=7;last=[...Array(7)].map((_,i)=>key(addDays(t,i-6)))}
   const token=Symbol(); renderTeam.tok=token;
   const rows=[], stats=[];
@@ -921,12 +927,19 @@ async function renderTeam(){
     const rs=Object.entries(o.weeks).filter(([w])=>last.includes(w)||last.includes(key(addDays(parse(w),6)))).map(([,w])=>w.rating).filter(Boolean);
     const rt=rs.length?rs.reduce((x,y)=>x+y,0)/rs.length:0;
     stats.push({p,a,o});
+    if(isD){const d=o.days[last[0]];
+      rows.push(hasData(d)?`<tr data-pid="${esc(p.id)}"><td>${esc(pname(p.id))}</td><td>${d.sleep?fmtH(d.sleep):"–"} ${d.sleepQ?pill(d.sleepQ):""}</td><td>${pill(d.morning)}</td><td>${pill(d.fatigue,1)}</td><td>${pill(d.stress,1)}</td><td>${cell(d,"sand")}</td><td>${cell(d,"gym")}</td><td>${mealsCount(d)}/5</td><td>${(d.note||"").trim()?esc(d.note):"–"}</td></tr>`
+        :`<tr data-pid="${esc(p.id)}"><td>${esc(pname(p.id))}</td><td class="empty" colspan="8" style="text-align:center">nevyplnila</td></tr>`);continue}
     rows.push(`<tr data-pid="${esc(p.id)}"><td>${esc(pname(p.id))}</td><td>${a.days}/${total}</td><td>${a.sl?fmtH(a.sl):"–"}</td><td>${nx(a.sandN,a.sandMin)}</td><td>${nx(a.gymN,a.gymMin)}</td><td>${ld(a.load)}</td><td>${a.rest}</td><td>${a.meals?a.meals+"/"+a.days*5:"–"}</td><td>${pill(a.m)}</td><td>${pill(a.e,1)}</td><td>${pill(a.st,1)}</td>${isM?`<td>${pill(rt)}</td>`:""}<td>${ld0?parse(ld0).getDate()+"."+(parse(ld0).getMonth()+1)+".":"–"}</td></tr>`)}
   if(renderTeam.tok!==token)return;
   const el2=$("#teamTbl"); if(!el2)return;
+  if(isD){const filled=stats.filter(x=>hasData(x.o.days[last[0]])).length;
+    el2.innerHTML=`<p class="note" style="margin:0 0 8px">Vyplnilo ${filled} z ${stats.length}.</p><div class="tbl"><table><thead><tr><th>Hráčka</th><th>Spánek</th><th>Připravenost</th><th>Únava</th><th>Stres</th><th>Trénink na písku</th><th>Posilovna</th><th>Jídla</th><th>Poznámka</th></tr></thead><tbody>${rows.join("")}</tbody></table></div><p class="note">Klepnutím na hráčku otevřeš její zápis toho dne.</p>`;
+    el2.querySelectorAll("[data-pid]").forEach(r=>r.onclick=()=>{$("#psel").value=r.dataset.pid;selectPlayer(r.dataset.pid);state.cur=last[0];location.hash="#den"});
+  }else
   el2.innerHTML=`<div class="tbl"><table><thead><tr><th>Hráčka</th><th>Zapsáno</th><th>ø Spánek</th><th>Trénink na písku</th><th>Posilovna</th><th>Zátěž</th><th>Volno</th><th>Jídla</th><th>Připravenost</th><th>Únava</th><th>Stres</th>${isM?"<th>Hodnocení týdnů</th>":""}<th>Poslední zápis</th></tr></thead><tbody>${rows.join("")}</tbody></table></div><p class="note">Klepnutím na hráčku přepneš celou aplikaci na její deník.</p>`;
-  el2.querySelectorAll("[data-pid]").forEach(r=>r.onclick=()=>{$("#psel").value=r.dataset.pid;selectPlayer(r.dataset.pid)});
-  const cc=$("#coachCharts"); if(cc)cc.innerHTML=coachCharts(stats,isM?MONTHS[Number(state.teamMonth.split("-")[1])-1]:"posledních 7 dní",last);
+  if(!isD)el2.querySelectorAll("[data-pid]").forEach(r=>r.onclick=()=>{$("#psel").value=r.dataset.pid;selectPlayer(r.dataset.pid)});
+  const cc=$("#coachCharts"); if(cc)cc.innerHTML=coachCharts(stats,isD?$("#tdLbl").textContent:isM?MONTHS[Number(state.teamMonth.split("-")[1])-1]:"posledních 7 dní",last);
 }
 const PCOL=["var(--accent)","var(--feel)","var(--gym)","var(--food)","var(--sleep)","var(--sand)","var(--rec)","var(--bad)"];
 function weekStats(o,mon){const ids=[...Array(7)].map((_,i)=>key(addDays(mon,i)));const sd=docs,sv={...dirty};docs=o.days;for(const k in dirty)delete dirty[k];const a=agg(ids);docs=sd;Object.assign(dirty,sv);return a}
