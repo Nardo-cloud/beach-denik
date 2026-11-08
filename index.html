@@ -366,15 +366,15 @@ body.locked nav.tabs,body.locked #view,body.locked #banner,body.locked #coachbar
 .folded .fs-sub{font-family:var(--f-num);font-size:12px;color:var(--muted)}
 .folded .skip{flex:none;padding:8px 12px}
 .seg.seg3b{grid-template-columns:repeat(3,1fr)}
-.fillbox{border:2px solid var(--c);padding:14px 16px;margin:4px 0 14px;background:color-mix(in srgb,var(--c) 10%,transparent)}
+.fillbox{margin:2px 0 14px}
 .fillbox.ok{--c:var(--good)} .fillbox.part{--c:var(--warn)} .fillbox.none{--c:var(--bad)}
-.fb-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.fb-k{font-family:var(--f-label);font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:14px;color:var(--c)}
-.fb-v{font-family:var(--f-display);font-weight:800;font-size:44px;line-height:1;color:var(--c)}
-.fb-v small{font-size:22px;color:var(--muted)}
-.fb-bar{display:flex;gap:4px;margin:10px 0 8px}
-.fb-bar span{flex:1;height:8px;background:var(--line2)} .fb-bar span.on{background:var(--c)}
-.fb-msg{font-weight:600;font-size:14px;color:var(--ink)}
+.fb-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.fb-k{order:2;font-family:var(--f-label);font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+.fb-v{font-family:var(--f-display);font-weight:800;font-size:28px;line-height:1;color:var(--c)}
+.fb-v small{font-size:16px;color:var(--muted)}
+.fb-msg{order:3;font-size:13px;color:var(--c);font-weight:600}
+.fb-bar{display:flex;gap:3px;margin-top:8px}
+.fb-bar span{flex:1;height:4px;background:var(--line2)} .fb-bar span.on{background:var(--c)}
 </style>
 </head>
 <body class="locked">
@@ -944,9 +944,8 @@ async function renderTeam(){
   const el2=$("#teamTbl"); if(!el2)return;
   if(isD){const filled=stats.filter(x=>hasData(x.o.days[last[0]])).length, miss=stats.filter(x=>!hasData(x.o.days[last[0]])).map(x=>esc(pname(x.p.id)));
     const all=filled===stats.length&&stats.length>0;
-    el2.innerHTML=`<div class="fillbox ${all?"ok":filled?"part":"none"}"><div class="fb-top"><span class="fb-k">Vyplnilo</span><span class="fb-v">${filled}<small> / ${stats.length}</small></span></div>
-      <div class="fb-bar">${stats.map(x=>`<span class="${hasData(x.o.days[last[0]])?"on":""}"></span>`).join("")}</div>
-      <div class="fb-msg">${all?"✓ Všechny hráčky mají den vyplněný":"Chybí: "+miss.join(", ")}</div></div><div class="tbl"><table><thead><tr><th>Hráčka</th><th>Spánek</th><th>Připravenost</th><th>Únava</th><th>Stres</th><th>Trénink na písku</th><th>Posilovna</th><th>Jídla</th><th>Poznámka</th></tr></thead><tbody>${rows.join("")}</tbody></table></div><p class="note">Klepnutím na hráčku otevřeš její zápis toho dne.</p>`;
+    el2.innerHTML=`<div class="fillbox ${all?"ok":filled?"part":"none"}"><div class="fb-top"><span class="fb-k">vyplnilo</span><span class="fb-v">${filled}<small> / ${stats.length}</small></span><span class="fb-msg">${all?"✓ všechny":"chybí: "+miss.join(", ")}</span></div>
+      <div class="fb-bar">${stats.map(x=>`<span class="${hasData(x.o.days[last[0]])?"on":""}"></span>`).join("")}</div></div><div class="tbl"><table><thead><tr><th>Hráčka</th><th>Spánek</th><th>Připravenost</th><th>Únava</th><th>Stres</th><th>Trénink na písku</th><th>Posilovna</th><th>Jídla</th><th>Poznámka</th></tr></thead><tbody>${rows.join("")}</tbody></table></div><p class="note">Klepnutím na hráčku otevřeš její zápis toho dne.</p>`;
     el2.querySelectorAll("[data-pid]").forEach(r=>r.onclick=()=>{$("#psel").value=r.dataset.pid;selectPlayer(r.dataset.pid);state.cur=last[0];location.hash="#den"});
   }else
   el2.innerHTML=`<div class="tbl"><table><thead><tr><th>Hráčka</th><th>Zapsáno</th><th>ø Spánek</th><th>Trénink na písku</th><th>Posilovna</th><th>Zátěž</th><th>Volno</th><th>Jídla</th><th>Připravenost</th><th>Únava</th><th>Stres</th>${isM?"<th>Hodnocení týdnů</th>":""}<th>Poslední zápis</th></tr></thead><tbody>${rows.join("")}</tbody></table></div><p class="note">Klepnutím na hráčku přepneš celou aplikaci na její deník.</p>`;
