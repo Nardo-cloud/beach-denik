@@ -1,0 +1,1185 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tréninkový deník beachvolejbalistky</title>
+<meta name="theme-color" content="#0E1B2B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Deník PBT">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=Archivo+Narrow:wght@600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+/* Layout: one narrow column like a scorer's clipboard under a sand-court hero with a net band; sticky tab bar (Den / Týden / Měsíc); sand = písek, indigo = posilovna */
+/* Club look (from the Prague Beach Team mark): deep navy ground, white hairlines, square corners, one sand accent. Single deliberate dark look. */
+:root{
+  --bg:#0E1B2B; --surface:#0E1B2B; --raise:#13243A; --ink:#F3F6F9; --muted:#93A4B6; --line:#2A3C52; --line2:#3B506A;
+  --accent:#E9B44C; --accent-ink:#0E1B2B; --hi:#E9B44C;
+  --rec:#5ED1C2; --sleep:#9AA9F0; --feel:#F0A05A; --food:#7FD39A; --sand:#E9B44C; --sand-soft:#2A2A2A; --gym:#B6A2F2; --gym-soft:#1F2340;
+  --am:#E9B44C; --pm:#7FC7F0; --good:#6FCF8E; --warn:#E9B44C; --bad:#F07A6A;
+  --hero:#13243A; --hero-ink:#F3F6F9; --hero-acc:#E9B44C; --netc:rgba(243,246,249,.28); --tape:#F3F6F9; --grain:transparent; --grain-d:rgba(0,0,0,.35);
+  --sky:#0E1B2B; --sea:#0E1B2B; --sea2:#0E1B2B; --sun:#E9B44C; --ink-l:#F3F6F9;
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-label:"Archivo Narrow","Arial Narrow",Arial,sans-serif;
+  --f-body:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;font-variant-numeric:tabular-nums}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 48px}
+.hero{position:relative;border-radius:18px;overflow:hidden;background:var(--sky);color:var(--hero-ink);margin-block:6px 10px}
+.hero-in{padding:16px 16px 0;display:flex;flex-direction:column;gap:2px}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(22px,8.2vw,40px);line-height:.95;overflow-wrap:anywhere;letter-spacing:.01em;margin:0;text-transform:uppercase}
+h1 span{color:var(--hero-acc);display:block}
+.scene{display:block;width:100%;height:auto;margin-top:-10px}
+.scene .sun{fill:var(--sun)} .scene .gull{fill:none;stroke:var(--hero-ink);stroke-width:1.6;stroke-linecap:round;opacity:.6}
+.scene .sea{fill:var(--sea)} .scene .wave{fill:none;stroke:var(--sea2);stroke-width:2;stroke-linecap:round}
+.scene .sand{fill:var(--hero);stroke:var(--ink-l);stroke-width:1.5;stroke-opacity:.35}
+.scene .tape{fill:none;stroke:var(--tape);stroke-width:4.5;stroke-linejoin:round}
+.scene .tape2{stroke:var(--tape);stroke-width:2.5}
+.scene .post{stroke:var(--ink-l);stroke-width:5;stroke-linecap:round}
+.scene .band{fill:var(--tape);stroke:var(--ink-l);stroke-width:1;stroke-opacity:.5}
+.scene .ant{stroke:#D8443A;stroke-width:3;stroke-dasharray:5 4}
+.scene .prints ellipse,.scene .bshadow{fill:var(--grain-d)}
+.scene .trail{fill:none;stroke:var(--hero-ink);stroke-width:2;stroke-dasharray:2 7;stroke-linecap:round;opacity:.45}
+.scene .bw{fill:#FBF8F1} .scene .b1{stroke:var(--hero-acc)} .scene .b2{stroke:var(--am)} .scene .seam{stroke:#1B2A3A;stroke-opacity:.35}
+.scene .pl .limb{fill:none;stroke:#D7956A;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+.scene .pl .skin{fill:#D7956A}
+.scene .pl .hair{fill:#4A2E1C;stroke:#4A2E1C;stroke-width:2.2;stroke-linecap:round}
+.scene .pl .shorts{fill:#1B2A3A}
+.scene .pl .top{fill:var(--hero-acc)}
+.scene .jump .pl .top{fill:var(--am)}
+.scene .pl path,.scene .pl circle{stroke-linejoin:round}
+.scene .outline{stroke:#1B2A3A;stroke-width:3}
+@media (prefers-reduced-motion:no-preference){
+  .scene .bob{animation:bob 2.6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+  .scene .bshadow{animation:shad 2.6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+  .scene .jump{animation:jump 2.6s ease-in-out infinite alternate}
+  @keyframes jump{from{transform:translateY(0)}to{transform:translateY(-4px)}}
+  @keyframes bob{from{transform:translateY(0)}to{transform:translateY(-6px) rotate(14deg)}}
+  @keyframes shad{from{transform:scale(1)}to{transform:scale(.8);opacity:.7}}}
+.club{display:block;align-self:flex-start;height:56px;width:auto;border-radius:10px;margin-bottom:10px;box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.hero-sub{font-family:var(--f-display);font-weight:600;font-size:15px;letter-spacing:.06em;text-transform:uppercase;margin-top:6px}
+.status{font-size:12px;color:var(--hero-ink);opacity:.75;margin-top:2px}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:8px;margin-bottom:12px}
+nav.tabs .seg3{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px}
+nav.tabs a{flex:1;text-align:center;text-decoration:none;color:var(--muted);font-family:var(--f-display);font-weight:600;font-size:17px;letter-spacing:.06em;text-transform:uppercase;padding:7px 4px;border-radius:999px}
+nav.tabs a[aria-current="page"]{background:var(--ink);color:var(--hi)}
+nav.tabs a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.log{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.lday{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.lday .hd{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.lday .dt{font-family:var(--f-display);font-weight:700;font-size:19px;text-transform:uppercase;margin-right:auto}
+.lday .tag{font-size:12px;color:var(--muted)}
+.lrow{display:flex;gap:8px;font-size:14px;padding-block:3px;align-items:baseline}
+.lrow .k{flex:none;width:92px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:color-mix(in srgb,var(--c,var(--muted)) 80%,var(--ink))}
+.lrow .v{min-width:0;flex:1}
+.lnote{font-style:italic;color:var(--muted);font-size:14px;margin-top:4px}
+.lweek{background:color-mix(in srgb,var(--feel) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--feel) 40%,var(--line));border-radius:14px;padding:12px}
+.lweek h4{margin:0 0 6px;font-family:var(--f-display);font-size:18px;text-transform:uppercase;letter-spacing:.04em;display:flex;gap:8px;align-items:center}
+details.exp{padding:12px 14px} details.exp summary{cursor:pointer;display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:600;font-size:17px;letter-spacing:.05em;text-transform:uppercase;list-style:none}
+details.exp summary::-webkit-details-marker{display:none}
+details.exp[open] summary{margin-bottom:10px}
+.hbars{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+.hb{display:flex;flex-direction:column;gap:4px}
+.hb .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px}
+.hb .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.hb .v{font-family:var(--f-display);font-weight:700;font-size:20px;line-height:1;font-variant-numeric:tabular-nums}
+.hb .v small{font-family:var(--f-body);font-size:12px;font-weight:600;margin-left:6px;padding:2px 7px;border-radius:999px;vertical-align:2px}
+.hb .tr{position:relative;height:16px;border-radius:8px;background:var(--bg);border:1px solid var(--line)}
+.hb .fl{position:absolute;inset:0 auto 0 0;border-radius:8px}
+.hb .mk{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);border-radius:1px}
+.axis{position:relative;height:16px;margin-top:2px;font-size:11px;color:var(--muted)}
+.axis span{position:absolute;transform:translateX(-50%)} .axis span:first-child{transform:none} .axis span:last-child{transform:translateX(-100%)}
+.mklab{font-size:11px;font-weight:600;color:var(--ink);text-align:right;margin-bottom:-6px}
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--surface);font-size:13px;font-weight:600;padding:6px 10px;border-radius:8px;max-width:min(320px,90vw);white-space:normal;text-align:center;transform:translate(-50%,calc(-100% - 12px))}
+.tipt{cursor:pointer}
+@media (prefers-reduced-motion:no-preference){section.blk.flash{animation:flash 1.6s ease-out}@keyframes flash{0%,40%{box-shadow:0 0 0 4px color-mix(in srgb,var(--c,var(--accent)) 55%,transparent)}100%{box-shadow:0 0 0 0 transparent}}}
+.coachbar{display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--hi);border-radius:14px;padding:8px 12px;margin-bottom:12px}
+.coachbar label{font-family:var(--f-display);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:14px}
+.coachbar select{flex:1;min-width:0;font:inherit;font-weight:600;color:var(--ink);background:var(--surface);border:0;border-radius:10px;padding:8px 10px}
+.banner{background:var(--sand-soft);border:1px solid var(--sand);border-radius:10px;padding:10px 12px;font-size:13px;margin-bottom:14px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.datebar{scroll-margin-top:calc(env(safe-area-inset-top,0px) + 72px);display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.datebar .lbl{flex:1;min-width:0;text-align:center}
+.datebar .day{font-family:var(--f-display);font-weight:700;font-size:32px;text-transform:uppercase;line-height:1}
+.datebar .sub{font-size:13px;color:var(--muted)}
+button{font:inherit;color:inherit;cursor:pointer}
+.icon{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font-size:20px;line-height:1;display:grid;place-items:center}
+.link{background:none;border:0;color:var(--accent);font-weight:600;padding:4px 0}
+section.blk{scroll-margin-top:calc(env(safe-area-inset-top,0px) + 72px);background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 1px 0 var(--line);padding:14px;margin-bottom:12px}
+.blk h2{font-family:var(--f-display);font-weight:600;font-size:19px;letter-spacing:.05em;text-transform:uppercase;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.ib{width:30px;height:30px;border-radius:9px;display:inline-grid;place-items:center;flex:none;background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--c)}
+.ib svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ib-sleep{--c:var(--sleep)} .ib-feel{--c:var(--feel)} .ib-food{--c:var(--food)} .ib-ac{--c:var(--accent)} .ib-sand{--c:var(--sand)} .ib-gym{--c:var(--gym)} .ib-am{--c:var(--am)} .ib-ink{--c:var(--ink)}
+section.blk[class*=" c-"]{background:color-mix(in srgb,var(--c) 9%,var(--surface));border-color:color-mix(in srgb,var(--c) 38%,var(--line));box-shadow:0 2px 0 color-mix(in srgb,var(--c) 30%,transparent)}
+section.blk[class*=" c-"]>h2{color:color-mix(in srgb,var(--c) 72%,var(--ink))}
+section.blk[class*=" c-"] :is(input,textarea,.feel button:not([aria-pressed="true"]),.chip:not([aria-pressed="true"]),.rpe button:not([aria-pressed="true"]),.seg button:not([aria-pressed="true"]),.add,.offbox){background:var(--surface)}
+.c-sleep,.t-sleep{--c:var(--sleep)} .c-feel,.t-feel{--c:var(--feel)} .c-food,.t-food{--c:var(--food)} .c-sand,.t-sand{--c:var(--sand)} .c-gym,.t-gym{--c:var(--gym)} .c-ac,.t-ac{--c:var(--accent)} .t-rec{--c:var(--rec)}
+.tile[class*=" t-"]{background:color-mix(in srgb,var(--c) 12%,var(--surface));border-color:color-mix(in srgb,var(--c) 40%,var(--line))}
+.tile[class*=" t-"] .k{color:color-mix(in srgb,var(--c) 80%,var(--ink))}
+.tile[class*=" t-"] .v{color:color-mix(in srgb,var(--c) 55%,var(--ink))}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.dot.am{background:var(--am)} .dot.pm{background:var(--pm)} .dot.sl{background:var(--ink);opacity:.75}
+.dot.sand{background:var(--sand)} .dot.gym{background:var(--gym)} .dot.ac{background:var(--accent)}
+.blk h2 .tot{margin-left:auto;font-family:var(--f-body);font-size:13px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--muted)}
+.sess{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.sess .n{font-family:var(--f-display);font-weight:600;font-size:16px;min-width:64px;color:var(--muted)}
+.sess input{width:84px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:4px 10px;font-size:13px}
+.chip:hover{border-color:var(--accent)}
+.rm{border:0;background:none;color:var(--muted);font-size:18px;padding:4px 8px;margin-left:auto}
+.add{border:1px dashed var(--line);background:none;border-radius:10px;flex:1;padding:10px;color:var(--accent);font-weight:600}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.gdet{flex-basis:100%;display:flex;flex-direction:column;gap:8px;padding:8px 0 12px;border-bottom:1px solid var(--line)}
+.gdet .t{font-size:13px;font-weight:600;color:var(--muted)}
+.gtags{font-size:12px;color:var(--muted);white-space:normal}
+.rpe{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.rpe button{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:7px 0;font-weight:600;font-size:14px}
+.rpe button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.rpe button[aria-pressed="true"]:is([data-rpe="5"],[data-rpe="6"]){background:var(--warn);border-color:var(--warn);color:var(--surface)}
+.rpe button[aria-pressed="true"]:is([data-rpe="7"],[data-rpe="8"]){background:var(--am);border-color:var(--am);color:var(--surface)}
+.rpe button[aria-pressed="true"]:is([data-rpe="9"],[data-rpe="10"]){background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.rpel{font-size:12px;color:var(--muted);min-height:1em}
+.plan-row{display:flex;align-items:center;gap:10px;padding-block:4px}
+.plan-row .l{flex:1;font-size:14px}
+.plan-row .v{min-width:34px;text-align:center;font-family:var(--f-display);font-weight:700;font-size:20px}
+.step{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:20px;line-height:1}
+.cmp{display:flex;flex-direction:column;gap:12px}
+.cmp .top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px;gap:8px}
+.cmp .ok{color:var(--good);font-weight:600}
+.cmp .left{color:var(--muted)}
+.bars{display:flex;gap:4px}
+.bars span{flex:1;height:10px;border-radius:3px;background:var(--bg);border:1px solid var(--line)}
+.bars span.f-sand{background:var(--sand);border-color:var(--sand)}
+.bars span.f-gym{background:var(--gym);border-color:var(--gym)}
+.bars span.f-rest{background:var(--sand-soft);border-color:var(--sand)}
+.save{border:0;background:var(--ink);color:var(--hi);border-radius:10px;padding:10px 18px;font-weight:600;min-width:110px}
+.save.done{background:var(--good)}
+.save:disabled{opacity:.7}
+.skip{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 14px;color:var(--muted);font-weight:600}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.seg button{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px;font-family:var(--f-display);font-weight:600;font-size:18px;letter-spacing:.04em;text-transform:uppercase}
+.seg button[aria-pressed="true"].yes{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.seg button[aria-pressed="true"].no{background:var(--sand-soft);border-color:var(--sand);color:var(--ink)}
+.offbox{background:var(--bg);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.offbox .h{display:flex;align-items:center;gap:8px;font-weight:600}
+.offbox .h .link{margin-left:auto}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--hi)}
+.offtag{color:var(--muted);font-style:italic}
+input[type=number],input[type=text],input[type=date],input[type=month],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+textarea{width:100%;resize:vertical;min-height:40px}
+.unit{font-size:13px;color:var(--muted)}
+.feel{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.feel button{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 2px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.feel button b{font-family:var(--f-display);font-size:22px;line-height:1}
+.feel button small{font-size:11px;color:var(--muted)}
+.feel button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.feel button[aria-pressed="true"] small{color:var(--accent-ink)}
+.feel button[aria-pressed="true"]:is([data-v="1"],[data-v="2"]),.feel:is([data-feel="stress"],[data-feel="fatigue"]) button[aria-pressed="true"]:is([data-v="4"],[data-v="5"]){background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.feel button[aria-pressed="true"][data-v="3"]{background:var(--warn);border-color:var(--warn);color:var(--surface)}
+.feel button[aria-pressed="true"]:is([data-v="4"],[data-v="5"]),.feel:is([data-feel="stress"],[data-feel="fatigue"]) button[aria-pressed="true"]:is([data-v="1"],[data-v="2"]){background:var(--good);border-color:var(--good);color:var(--surface)}
+.feel button[aria-pressed="true"] small{color:inherit;opacity:.9}
+.feelrow+.feelrow{margin-top:14px}
+.feelrow .t{font-weight:600;font-size:14px;margin-bottom:6px}
+.meal{display:grid;grid-template-columns:1fr;gap:8px;align-items:start;padding-block:8px;border-top:1px solid var(--line)}
+.meal:first-of-type{border-top:0;padding-top:0}
+.meal label{grid-column:1/-1;font-weight:600;font-size:14px}
+.meal textarea{min-width:0}
+.meal .kc{display:flex;flex-direction:column;gap:2px}
+.meal .kc input{width:100%}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface);margin-bottom:12px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+  .tbl{overflow:visible;border:0;background:none}
+  .tbl table,.tbl tbody,.tbl tfoot{display:block}
+  .tbl thead{display:none}
+  .tbl tr{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px}
+  .tbl tfoot tr{background:color-mix(in srgb,var(--accent) 10%,var(--surface));border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+  .tbl td{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:0;padding:7px 9px;white-space:normal;min-width:0;border-radius:10px;font-weight:600;font-size:15px;
+    --c:var(--accent);background:color-mix(in srgb,var(--c) 9%,var(--surface))}
+  .tbl td[data-cat="sleep"]{--c:var(--sleep)} .tbl td[data-cat="sand"]{--c:var(--sand)} .tbl td[data-cat="gym"]{--c:var(--gym)} .tbl td[data-cat="rec"]{--c:var(--rec)} .tbl td[data-cat="feel"]{--c:var(--feel)} .tbl td[data-cat="food"]{--c:var(--food)}
+  .tbl td.nil{background:var(--bg);color:var(--muted);font-weight:400}
+  .tbl td .gtags{font-weight:400}
+  .tbl td::before{content:attr(data-label);font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:color-mix(in srgb,var(--c) 75%,var(--ink))}
+  .tbl td.nil::before{color:var(--muted)}
+  .tbl.days tbody td.nil{display:none}
+  .tbl.days tbody td:not(:first-child){font-size:14px}
+  .tbl td:first-child{grid-column:1/-1;font-family:var(--f-display);font-weight:700;font-size:20px;text-transform:uppercase;background:none;padding:0 2px 4px;flex-direction:row;align-items:center;gap:6px;flex-wrap:wrap;color:var(--ink)}
+  .tbl td:first-child::before{content:none}
+  .tbl td.empty{grid-column:1/-1}
+  .tbl td.empty::before{content:none}
+  .tbl tr:has(td.empty){grid-template-columns:1fr auto;align-items:center;padding-block:8px}
+  .tbl tr:has(td.empty) td:first-child{grid-column:auto;border:0;margin:0;padding:0}
+  .tbl tr:has(td.empty) td.empty{grid-column:auto;padding:0;color:var(--muted)}
+  .tbl tfoot td{background:none}
+
+th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{font-family:var(--f-display);font-weight:600;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+tbody tr{cursor:pointer} tbody tr:hover{border-color:var(--accent)}
+tbody tr.today td:first-child{color:var(--accent);font-weight:600}
+tbody tr.today{background:color-mix(in srgb,var(--hi) 14%,transparent)}
+tfoot td{font-weight:600;border-bottom:0;background:var(--bg)}
+td.empty{color:var(--line)}
+.pill{display:inline-block;min-width:26px;text-align:center;border-radius:6px;padding:1px 6px;font-weight:600;font-size:13px}
+.f1,.f2{background:color-mix(in srgb,var(--bad) 18%,transparent);color:var(--bad)}
+.f3{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.f4,.f5{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px}
+.tile .k{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.tile .v{font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1.1}
+.tile .s{font-size:12px;color:var(--muted)}
+.rangebar{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.rangebar .lbl{flex:1;text-align:center;font-family:var(--f-display);font-weight:700;font-size:22px;text-transform:uppercase}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin:4px 0 8px}
+.legend span{display:flex;align-items:center;gap:5px}
+svg text{fill:var(--muted);font-family:var(--f-body);font-size:10px}
+.note{font-size:12px;color:var(--muted);margin-top:6px}
+.samplechip{font-size:11px;background:var(--sand-soft);color:var(--ink);border:1px solid var(--sand);border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:middle}
+h3.sec{font-family:var(--f-display);font-weight:600;font-size:17px;letter-spacing:.05em;text-transform:uppercase;margin:18px 0 8px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){nav.tabs a,.feel button{transition:background .15s,color .15s}}
+
+/* ===== Club look overrides ===== */
+body{font-size:15px}
+.hero{border-radius:0;background:var(--bg);border:1px solid var(--line2)}
+.hero-in{padding:16px 16px 4px}
+.club{border-radius:0;box-shadow:none;height:48px}
+h1{font-family:var(--f-display);font-weight:800;letter-spacing:.005em;font-size:clamp(20px,6.4vw,36px);overflow-wrap:normal}
+h1 span{color:var(--ink)}
+.hero-sub{font-family:var(--f-num);font-weight:500;font-size:12px;letter-spacing:.04em;color:var(--muted)}
+.status{color:var(--muted);opacity:1;font-family:var(--f-num);font-size:11px}
+.scene .sea,.scene .wave,.scene .sun,.scene .gull,.scene .prints{display:none}
+.scene .sand{fill:var(--raise);stroke:none}
+.scene .tape,.scene .tape2{stroke:var(--ink);stroke-width:2}
+.scene .post{stroke:var(--ink)}
+.scene .band{fill:var(--ink);stroke:none}
+.scene .ant{stroke:var(--accent)}
+.scene .trail{stroke:var(--muted)}
+.scene .bw{fill:var(--ink)} .scene .b1,.scene .b2{stroke:var(--accent)} .scene .outline{stroke:var(--bg)}
+.scene .pl .limb{stroke:#C9D3DD} .scene .pl .skin{fill:#C9D3DD} .scene .pl .hair{fill:#C9D3DD;stroke:#C9D3DD}
+.scene .pl .top,.scene .jump .pl .top{fill:var(--accent)} .scene .pl .shorts{fill:var(--bg)}
+nav.tabs{background:var(--bg);border-bottom:1px solid var(--line2);padding-block:0;margin-bottom:16px}
+nav.tabs .seg3{background:none;border:0;border-radius:0;padding:0;gap:0}
+nav.tabs a{border-radius:0;font-family:var(--f-label);font-weight:700;letter-spacing:.1em;font-size:14px;padding:14px 4px 11px;border-bottom:3px solid transparent;color:var(--muted)}
+nav.tabs a[aria-current="page"]{background:none;color:var(--ink);border-bottom-color:var(--accent)}
+.banner{background:none;border:1px solid var(--accent);border-radius:0;color:var(--ink)}
+.coachbar{background:none;border:1px solid var(--line2);border-radius:0;color:var(--ink)}
+.coachbar label{font-family:var(--f-label);letter-spacing:.1em}
+.coachbar select{border-radius:0;background:var(--raise);color:var(--ink);border:1px solid var(--line2)}
+.datebar .day{font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:.005em}
+.datebar .sub{font-family:var(--f-num);font-size:12px}
+.icon{border-radius:0;background:none;border:1px solid var(--line2);color:var(--ink)}
+.ib{display:none}
+section.blk,section.blk[class*=" c-"],details.exp{background:none;border:0;border-top:1px solid var(--line2);border-radius:0;box-shadow:none;padding:16px 0 18px;margin:0}
+section.blk[class*=" c-"]>h2,.blk h2,details.exp summary{color:var(--ink);font-family:var(--f-label);font-weight:700;font-size:14px;letter-spacing:.1em;gap:8px}
+.blk h2 .tot{font-family:var(--f-num);font-size:12px;color:var(--muted)}
+section.blk[class*=" c-"] :is(input,textarea,.feel button:not([aria-pressed="true"]),.chip:not([aria-pressed="true"]),.rpe button:not([aria-pressed="true"]),.seg button:not([aria-pressed="true"]),.add,.offbox){background:none}
+.feelrow .t,.gdet .t{font-family:var(--f-label);font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+input[type=number],input[type=text],input[type=date],input[type=month],textarea,select{border-radius:0;background:none;border:1px solid var(--line2);color:var(--ink)}
+input[type=number],input[type=text]{font-family:var(--f-num)}
+.feel button,.rpe button,.seg button,.chip,.step,.add,.skip,.offbox{border-radius:0;background:none;border:1px solid var(--line2);color:var(--ink)}
+.feel button b{font-family:var(--f-display);font-weight:800}
+.feel button small{color:var(--muted)}
+.feel button[aria-pressed="true"],.rpe button[aria-pressed="true"],.seg button[aria-pressed="true"].yes,.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.feel button[aria-pressed="true"] small{color:var(--accent-ink);opacity:.8}
+.seg button{font-family:var(--f-label);font-weight:700;letter-spacing:.1em;font-size:15px}
+.seg button[aria-pressed="true"].no{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.save{border-radius:0;background:var(--accent);color:var(--accent-ink);font-family:var(--f-label);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.save.done{background:var(--good);color:var(--bg)}
+.add{border-style:dashed;color:var(--accent)}
+.sess .n{font-family:var(--f-label)}
+.unit{font-family:var(--f-num);font-size:12px}
+.rpel,.note{color:var(--muted)}
+.link{color:var(--accent)}
+.tiles{gap:0;border-top:1px solid var(--line2);border-left:1px solid var(--line2);grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-bottom:16px}
+.tile,.tile[class*=" t-"]{background:none;border:0;border-right:1px solid var(--line2);border-bottom:1px solid var(--line2);border-radius:0;padding:12px 14px}
+.tile .k,.tile[class*=" t-"] .k{font-family:var(--f-label);font-weight:700;letter-spacing:.1em;color:var(--muted)}
+.tile .v,.tile[class*=" t-"] .v{font-family:var(--f-display);font-weight:800;color:var(--ink);font-size:28px}
+.tile .s{font-family:var(--f-num);font-size:11px}
+.pill{border-radius:0;font-family:var(--f-num)}
+.f1,.f2{background:none;color:var(--bad);box-shadow:inset 0 0 0 1px var(--bad)}
+.f3{background:none;color:var(--warn);box-shadow:inset 0 0 0 1px var(--warn)}
+.f4,.f5{background:none;color:var(--good);box-shadow:inset 0 0 0 1px var(--good)}
+.tbl tr{border-radius:0;background:none;border:1px solid var(--line2)}
+.tbl tfoot tr{background:var(--raise);border-color:var(--line2)}
+.tbl td,.tbl td[data-cat]{background:none;border-radius:0;padding:6px 0;font-family:var(--f-num);font-weight:500;font-size:14px}
+.tbl td::before,.tbl td.nil::before{font-family:var(--f-label);color:var(--muted)}
+.tbl td:first-child{font-family:var(--f-display);font-weight:800;font-size:18px;border-bottom:1px solid var(--line);padding-bottom:8px}
+tbody tr.today{background:var(--raise)} tbody tr.today td:first-child{color:var(--accent)}
+tbody tr:hover{border-color:var(--accent)}
+.lday,.lweek{background:none;border:1px solid var(--line2);border-radius:0}
+.lday .dt,.lweek h4{font-family:var(--f-display);font-weight:800}
+.lrow .k{font-family:var(--f-label);color:var(--muted)}
+.lrow .v{font-family:var(--f-num);font-size:13px}
+.lweek{border-color:var(--accent)}
+.hb .tr{border-radius:0;background:var(--raise);border-color:var(--line2)} .hb .fl{border-radius:0}
+.hb .v{font-family:var(--f-display);font-weight:800}
+.hb .v small{border-radius:0}
+.rangebar .lbl,h3.sec{font-family:var(--f-label);font-weight:700;letter-spacing:.1em}
+h3.sec{color:var(--muted);font-size:13px}
+.legend{font-family:var(--f-num);font-size:11px}
+svg text{font-family:var(--f-num);font-size:9.5px}
+.samplechip{border-radius:0;background:none;border-color:var(--accent);color:var(--accent);font-family:var(--f-num)}
+#tip{border-radius:0;background:var(--ink);color:var(--bg);font-family:var(--f-num);font-weight:500;font-size:12px}
+.offtag{color:var(--muted)}
+.feel button b.face{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;font-weight:400;font-size:32px;line-height:1.05;filter:saturate(1.35) brightness(1.08) drop-shadow(0 0 6px rgba(255,205,60,.35))}
+.feel button{padding:10px 2px 8px}
+.feel button:not([aria-pressed="true"]) b.face{opacity:.9}
+@media (prefers-reduced-motion:no-preference){.feel button b.face{transition:transform .15s}.feel button:hover b.face{transform:scale(1.12)}}
+.wrap .feel button[aria-pressed="true"]{--sc:var(--good);background:color-mix(in srgb,var(--sc) 20%,transparent);border:2px solid var(--sc);color:var(--ink)}
+.wrap .feel button[aria-pressed="true"] small{color:var(--ink);opacity:1;font-weight:600}
+.wrap .feel button[aria-pressed="true"] b.face{transform:scale(1.18);filter:saturate(1.5) brightness(1.12) drop-shadow(0 0 10px rgba(255,205,60,.6))}
+.wrap .feel button[aria-pressed="true"]:is([data-v="1"],[data-v="2"]),.wrap .feel:is([data-feel="stress"],[data-feel="fatigue"]) button[aria-pressed="true"]:is([data-v="4"],[data-v="5"]){--sc:var(--bad)}
+.wrap .feel button[aria-pressed="true"][data-v="3"]{--sc:var(--warn)}
+.wrap .feel:is([data-feel="stress"],[data-feel="fatigue"]) button[aria-pressed="true"]:is([data-v="1"],[data-v="2"]){--sc:var(--good)}
+.mealq{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:7px;border-top:1px solid var(--line)}
+.mealq:first-of-type{border-top:0}
+.mealq .ml{font-weight:600;font-size:15px}
+.yn{display:flex;gap:4px;flex:none}
+.yn button{min-width:62px;padding:8px 10px;border:1px solid var(--line2);background:none;color:var(--ink);font-family:var(--f-label);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:13px}
+.yn button[data-had="1"][aria-pressed="true"]{background:var(--good);border-color:var(--good);color:var(--bg)}
+.yn button[data-had="0"][aria-pressed="true"]{background:var(--bad);border-color:var(--bad);color:var(--bg)}
+.mtags{display:flex;flex-wrap:wrap;gap:4px 10px}
+.mtag.y{color:var(--good)} .mtag.n{color:var(--bad)} .mtag.u{color:var(--muted)}
+
+.auth{border:1px solid var(--line2);padding:20px 16px;margin:8px 0 24px;display:flex;flex-direction:column;gap:10px}
+.auth h2{margin:0;font-family:var(--f-display);font-weight:800;font-size:24px;text-transform:uppercase}
+.auth form{display:flex;flex-direction:column;gap:8px}
+.auth label{font-family:var(--f-label);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+.auth input{font-size:17px;padding:12px;background:none;border:1px solid var(--line2);border-radius:0;color:var(--ink);font-family:var(--f-body)}
+.auth .save{padding:13px;font-size:15px}
+.logout{font-family:var(--f-num);font-size:11px;margin-top:4px;align-self:flex-start;padding:0}
+body.locked nav.tabs,body.locked #view,body.locked #banner,body.locked #coachbar{display:none!important}
+</style>
+</head>
+<body class="locked">
+<div class="wrap">
+  <header class="hero">
+    <div class="hero-in"><img class="club" src="data:image/png;base64,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" alt="Prague Beach Team" width="269" height="143"><h1>Tréninkový deník <span>beachvolejbalistky</span></h1><div class="hero-sub" id="heroSub"></div><div class="status" id="status">Načítám…</div><button type="button" class="link logout" id="logout" hidden>Odhlásit</button></div>
+    <svg class="scene" viewBox="0 0 360 172" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+      <defs>
+        <pattern id="mesh" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 0L6 6M6 0L0 6" stroke="var(--ink-l)" stroke-opacity=".45" stroke-width="1"/></pattern>
+        <pattern id="grainp" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="2" cy="3" r="1" fill="var(--grain-d)"/><circle cx="7" cy="7" r=".8" fill="var(--grain)"/></pattern>
+        <clipPath id="bclip"><circle cx="39" cy="30" r="25"/></clipPath>
+      </defs>
+      <circle class="sun" cx="318" cy="22" r="15"/>
+      <path class="gull" d="M40 18q5-5 10 0q5-5 10 0M70 30q4-4 8 0q4-4 8 0"/>
+      <rect class="sea" x="0" y="40" width="360" height="22"/>
+      <path class="wave" d="M0 47q15-4 30 0t30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0M10 55q15-3 30 0t30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0 30 0"/>
+      <path class="sand" d="M0 60Q90 54 180 59T360 58V172H0Z"/>
+      <path d="M0 60Q90 54 180 59T360 58V172H0Z" fill="url(#grainp)"/>
+      <g class="prints"><ellipse cx="118" cy="140" rx="5" ry="2.4"/><ellipse cx="132" cy="132" rx="5" ry="2.4"/><ellipse cx="148" cy="142" rx="5" ry="2.4"/><ellipse cx="214" cy="104" rx="4" ry="2"/><ellipse cx="226" cy="98" rx="4" ry="2"/><ellipse cx="100" cy="104" rx="4" ry="2"/></g>
+      <path class="tape" d="M120 76H240L344 168H16Z"/>
+      <ellipse class="bshadow" cx="205" cy="94" rx="10" ry="2.2"/>
+      <g transform="translate(205 92) scale(.72)"><g class="pl">
+        <path class="limb" d="M-3 -30L-8 -2M3 -30L9 -4"/>
+        <path class="shorts" d="M-7 -36h14l1 9h-16z"/>
+        <path class="top" d="M-6 -56h12l1 21h-14z"/>
+        <path class="limb" d="M-5 -54L-8 -84M5 -54L8 -84"/>
+        <circle class="skin" cx="0" cy="-63" r="7"/>
+        <path class="hair" d="M-7 -65a7 7 0 0 1 14 -1q-6 -3 -14 1zM6 -67q8 2 7 12"/>
+      </g></g>
+      <g class="netg">
+        <line class="post" x1="70" y1="118" x2="70" y2="58"/><line class="post" x1="290" y1="118" x2="290" y2="58"/>
+        <rect x="70" y="64" width="220" height="26" fill="url(#mesh)"/>
+        <rect class="band" x="70" y="61" width="220" height="5" rx="1"/>
+        <rect class="band" x="70" y="88" width="220" height="3" rx="1"/>
+        <line class="ant" x1="79" y1="50" x2="79" y2="91"/><line class="ant" x1="281" y1="50" x2="281" y2="91"/>
+        <line class="tape2" x1="77" y1="114" x2="283" y2="114"/>
+      </g>
+      <ellipse class="bshadow" cx="264" cy="152" rx="14" ry="3"/>
+      <g class="jump"><g transform="translate(262 136) scale(1.12) rotate(-6)"><g class="pl">
+        <path class="limb" d="M-3 -30L-8 -2M3 -30L9 -4"/>
+        <path class="shorts" d="M-7 -36h14l1 9h-16z"/>
+        <path class="top" d="M-6 -56h12l1 21h-14z"/>
+        <path class="limb" d="M-4 -54L-15 -82M5 -53L15 -42"/>
+        <circle class="skin" cx="0" cy="-63" r="7"/>
+        <path class="hair" d="M-7 -65a7 7 0 0 1 14 -1q-6 -3 -14 1zM6 -67q8 2 7 12"/>
+      </g></g></g>
+      <path class="trail" d="M84 70Q150 -4 210 30"/>
+      <ellipse class="bshadow" cx="246" cy="146" rx="15" ry="3"/>
+      <g class="bob"><g transform="translate(205 12) scale(.8)">
+        <circle class="bw" cx="39" cy="30" r="25"/>
+        <g clip-path="url(#bclip)" fill="none" stroke-width="9"><path class="b1" d="M6 18c14 4 26 14 32 30"/><path class="b2" d="M44 2c-4 14-2 28 8 40"/><path class="b1" d="M70 20c-14-2-26 4-36 14"/></g>
+        <g clip-path="url(#bclip)" fill="none" stroke-width="1.8" class="seam"><path d="M6 12c16 4 28 16 34 34M8 25c12 3 22 12 27 26M49 2c-4 14-2 28 8 40M39 3c-4 14-2 28 9 40M70 14c-14-2-27 4-37 15M70 27c-14-2-25 3-33 12"/></g>
+        <circle cx="39" cy="30" r="25" fill="none" class="outline"/>
+        <path d="M24 16a18 18 0 0 1 10-6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".9"/></g></g>
+    </svg>
+  </header>
+  <section id="auth" class="auth" hidden>
+    <h2>Přihlášení</h2>
+    <p class="note">Zadej svůj e-mail. Pošleme ti odkaz a šestimístný kód, heslo nepotřebuješ.</p>
+    <form id="authForm" novalidate>
+      <label for="authEmail">E-mail</label>
+      <input id="authEmail" type="email" inputmode="email" autocomplete="email" placeholder="jmeno@email.cz" required>
+      <button type="submit" class="save" id="authSend">Poslat přihlašovací e-mail</button>
+    </form>
+    <form id="codeForm" hidden novalidate>
+      <p class="note" id="codeInfo"></p>
+      <label for="authCode">Kód z e-mailu</label>
+      <input id="authCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="123456">
+      <button type="submit" class="save" id="codeSend">Přihlásit</button>
+      <button type="button" class="link" id="codeBack">Zadat jiný e-mail</button>
+    </form>
+    <p class="note" id="authMsg" role="status"></p>
+  </section>
+  <section id="nameBox" class="auth" hidden>
+    <h2>Vítej v deníku</h2>
+    <p class="note">Jak se jmenuješ? Jméno uvidí jen trenér.</p>
+    <form id="nameForm" novalidate>
+      <label for="nameIn">Jméno a příjmení</label>
+      <input id="nameIn" type="text" autocomplete="name" placeholder="Anna Nováková" required>
+      <button type="submit" class="save">Pokračovat</button>
+    </form>
+    <p class="note" id="nameMsg" role="status"></p>
+  </section>
+  <nav class="tabs" aria-label="Pohled">
+    <div class="seg3"><a href="#den" id="tab-den">Den</a>
+    <a href="#tyden" id="tab-tyden">Týden</a>
+    <a href="#mesic" id="tab-mesic">Měsíc</a>
+    <a href="#trener" id="tab-trener" hidden>Trenér</a></div>
+  </nav>
+  <div id="coachbar" class="coachbar" hidden><label for="psel">Hráčka</label><select id="psel"></select></div>
+  <div id="banner"></div>
+  <main id="view"></main>
+  <div id="tip" role="tooltip" hidden></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script>
+(function(){
+const DAYS=["Pondělí","Úterý","Středa","Čtvrtek","Pátek","Sobota","Neděle"];
+const DSHORT=["Po","Út","St","Čt","Pá","So","Ne"];
+const MONTHS=["leden","únor","březen","duben","květen","červen","červenec","srpen","září","říjen","listopad","prosinec"];
+const MONTHS_G=["ledna","února","března","dubna","května","června","července","srpna","září","října","listopadu","prosince"];
+const FEEL=["","Vůbec","Spíš ne","Částečně","Připravená","Naplno"];
+const FATIG=["","Vůbec","Trochu","Středně","Hodně","Úplně"];
+const GFOCUS=["Nohy","Horní část","Core","Celé tělo","Výbušnost / skoky","Prevence (ramena, kotníky)","Mobilita / protažení"];
+const SLEEPQ=["","Špatně","Slabě","Ujde to","Dobře","Výborně"];
+const STRESS=["","Žádný","Malý","Střední","Velký","Obrovský"];
+const RECOV=["Protažení","Válec","Fyzio / masáž","Sauna","Bazén / plavání","Jóga","Ledová lázeň"];
+const RPEL=["","Velmi lehké","Lehké","Lehké","Střední","Střední","Náročné","Velmi těžké","Velmi těžké","Skoro maximum","Maximum"];
+const OFFR=["Plánované volno","Regenerace","Nemoc","Zranění","Škola / práce","Jiné"];
+const PLANK=[["sand","Písek","tréninků"],["gym","Posilovna","tréninků"],["rest","Volno a regenerace","dní"]];
+const dny=n=>n===1?"den":n<5?"dny":"dní";
+const TFEEL=["","Hrozně","Slabě","Ujde to","Dobře","Skvěle"];
+const RATE=["","Špatný","Slabší","Průměrný","Dobrý","Skvělý"];
+const REVIEW=[["good","Co se povedlo","Tréninky, zápasy, pokroky…"],["improve","Na čem zapracovat","Technika, hlava, regenerace…"],["body","Tělo a zdraví","Bolesti, únava, drobná zranění…"],["goal","Cíl na další týden","Jedna až dvě konkrétní věci"]];
+const MEALS=[["snidane","Snídaně"],["svacina1","Dopolední svačina"],["obed","Oběd"],["svacina2","Odpolední svačina"],["vecere","Večeře"]];
+
+const ICONS={moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',smile:'<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5c1 1.3 2.2 2 3.5 2s2.5-.7 3.5-2M9 9.5h.01M15 9.5h.01"/>',bowl:'<path d="M3 11h18a9 9 0 0 1-18 0zM8 7c0-1.5 1-2 1-3.5M12 7c0-1.5 1-2 1-3.5M16 7c0-1.5 1-2 1-3.5"/>',ball:'<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 9 9 9 0 0 0 7.8 4.5M12 12a9 9 0 0 1-7.8 4.5"/>',dumb:'<path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/>',pen:'<path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r=".5"/>',star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',down:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',pulse:'<path d="M3 12h4l3-7 4 14 3-7h4"/>'};
+const I=(n,c)=>`<span class="ib ib-${c||"ac"}" aria-hidden="true"><svg viewBox="0 0 24 24">${ICONS[n]}</svg></span>`;
+const $=s=>document.querySelector(s);
+const pad=n=>String(n).padStart(2,"0");
+const key=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const parse=k=>{const[a,b,c]=k.split("-").map(Number);return new Date(a,b-1,c)};
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const dow=d=>(d.getDay()+6)%7;
+const monday=d=>addDays(d,-dow(d));
+const today=()=>{const t=new Date();return new Date(t.getFullYear(),t.getMonth(),t.getDate())};
+const isoWeek=d=>{const t=new Date(d);t.setDate(t.getDate()+3-dow(t));const y=new Date(t.getFullYear(),0,4);return 1+Math.round(((t-y)/864e5-3+dow(y))/7)};
+const fmtMin=m=>{m=Math.round(m||0);if(!m)return"0 min";const h=Math.floor(m/60),r=m%60;return h?(h+" h"+(r?" "+r+" min":"")):r+" min"};
+const fmtShort=m=>{m=Math.round(m||0);const h=Math.floor(m/60),r=m%60;return h?(h+"h"+(r?" "+r:"")):r+"m"};
+const fmtH=h=>fmtMin(Math.round((h||0)*60/5)*5);
+const num=v=>{const n=parseFloat(String(v).replace(",","."));return isFinite(n)&&n>0?n:0};
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let state={cur:key(today()),weekStart:key(monday(today())),month:key(today()).slice(0,7)};
+let docs={};           // days: id -> body
+let weeks={};          // week reviews: monday id -> body
+const wdirty={};
+let store=null;        // {save(id,body), remove(id)}
+let mode="loading";
+const pending={};      // id -> timer
+const dirty={};        // id -> local body awaiting save
+const chains={};
+
+function blank(){return{sleep:0,go:{},off:{},sand:[],gym:[],morning:0,fatigue:0,meals:{},note:""}}
+function getWeek(id){return wdirty[id]||weeks[id]||null}
+function hasWeek(w){return !!(w&&(w.rating||(w.recov||[]).length||REVIEW.some(([k])=>(w[k]||"").trim())))}
+function getDay(id){return dirty[id]||docs[id]||null}
+function sumMin(a){return(a||[]).reduce((s,x)=>s+(Number(x.min)||0),0)}
+const ate=m=>!!m&&(m.had===true||(m.had!==false&&!!(m.text||"").trim()));
+const mealState=(d,k)=>{const m=d?.meals?.[k];if(!m)return null;if(m.had===true||m.had===false)return m.had;return (m.text||"").trim()?true:null};
+function mealsCount(d){return Object.values(d?.meals||{}).filter(ate).length}
+function hasData(d){return d&&(d.sleep||d.sleepQ||d.stress||d.go?.sand||d.go?.gym||d.off?.sand||d.off?.gym||(d.sand||[]).length||(d.gym||[]).length||d.morning||d.fatigue||mealsCount(d)||(d.note||"").trim())}
+
+function setStatus(t){$("#status").textContent=t}
+
+/* ---------- saving ---------- */
+function queueSave(id,body,col){
+  if(mode==="db"&&!base){setStatus("Nejdřív vyber hráčku.");return}
+  col=col||"days"; (col==="days"?dirty:wdirty)[id]=body; setStatus("Ukládám…");
+  clearTimeout(pending[col+id]);
+  pending[col+id]=setTimeout(()=>{const p=flush(id,col);if(p)p.catch(()=>{})},700);
+}
+function flush(id,col){
+  const D=col==="days"?dirty:wdirty, has=col==="days"?hasData:hasWeek;
+  const body=D[id]; if(!body||!store)return;
+  const clean=JSON.parse(JSON.stringify(body)); delete clean.sample;
+  const k=col+id;
+  chains[k]=(chains[k]||Promise.resolve()).then(()=>(has(clean)?store.save(col,id,clean):store.remove(col,id))).then(()=>{
+    if(D[id]===body){delete D[id]}
+    const M=col==="days"?docs:weeks; if(has(clean))M[id]=clean; else delete M[id];
+    setStatus("Uloženo "+new Date().toLocaleTimeString("cs-CZ",{hour:"2-digit",minute:"2-digit"}));
+  }).catch(e=>{
+    setStatus(e&&e.code==="quota_exceeded"?"Úložiště je plné – smažte staré dny.":"Neuloženo – zkontrolujte připojení a zkuste změnu znovu.");
+    throw e;
+  });
+  return chains[k];
+}
+
+/* ---------- routing ---------- */
+function route(){
+  const v=(location.hash||"#den").slice(1);
+  const view=["den","tyden","mesic"].includes(v)||(v==="trener"&&isCoach)?v:"den";
+  for(const t of ["den","tyden","mesic","trener"]){const a=$("#tab-"+t);if(t===view)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")}
+  render(view,true);
+}
+let currentView="den";
+let isCoach=false;
+function render(view,force){
+  currentView=view||currentView;
+  if(currentView==="den")renderDay(force);
+  else if(currentView==="tyden")renderWeek(force);
+  else if(currentView==="trener")renderCoach();
+  else renderMonth();
+  renderBanner();
+}
+
+function renderBanner(){
+  const hasSample=Object.values(docs).some(d=>d&&d.sample)||Object.values(weeks).some(d=>d&&d.sample);
+  let h="";
+  if(mode==="local")h+=`<div class="banner"><span>Záznamy se teď ukládají jen v tomto prohlížeči.</span></div>`;
+  if(hasSample)h+=`<div class="banner"><span>Tohle je ukázková hráčka s vyplněným týdnem 19.–25. října, ať vidíš, jak přehledy vypadají.</span><button class="link" id="delSample">Smazat ukázku</button></div>`;
+  $("#banner").innerHTML=h;
+  const b=$("#delSample"); if(b)b.onclick=async()=>{const wasSample=selPid==="ukazka";b.disabled=true;b.textContent="Mažu…";for(const [id,d] of Object.entries(docs)){if(d&&d.sample){try{await store.remove("days",id)}catch(e){}delete docs[id]}}for(const [id,d] of Object.entries(weeks)){if(d&&d.sample){try{await store.remove("weeks",id)}catch(e){}delete weeks[id]}}if(wasSample&&DB){try{await DB.doc("players/ukazka").delete()}catch(e){}}render(null,true)};
+}
+
+/* ---------- DAY ---------- */
+function renderDay(force){
+  const id=state.cur, d=parse(id);
+  const form=$("#dayform");
+  if(!force&&form&&form.dataset.id===id&&(form.contains(document.activeElement)||dirty[id]))return;
+  const day=JSON.parse(JSON.stringify(getDay(id)||blank()));
+  const isToday=id===key(today());
+  $("#view").innerHTML=`
+  <div class="datebar">
+    <button class="icon" id="prev" aria-label="Předchozí den">‹</button>
+    <div class="lbl">
+      <div class="day">${DAYS[dow(d)]}${day.sample?'<span class="samplechip">ukázka</span>':""}</div>
+      <div class="sub">${d.getDate()}. ${MONTHS_G[d.getMonth()]} ${d.getFullYear()} · ${isoWeek(d)}. týden ${isToday?"":'· <button class="link" id="goToday">Dnes</button>'}</div>
+    </div>
+    <button class="icon" id="next" aria-label="Další den">›</button>
+  </div>
+  ${dow(d)===6&&!hasWeek(getWeek(key(monday(d))))?`<div class="banner"><span><b>Neděle:</b> čas ohodnotit celý týden.</span><button type="button" class="link" id="goReview">Vyplnit hodnocení týdne</button></div>`:""}
+  <form id="dayform" data-id="${id}" onsubmit="return false">
+    <section class="blk c-sleep"><h2>${I("moon","sleep")}Spánek<span class="tot">minulou noc</span></h2>
+      <div class="sess"><span class="n">Spala jsi</span><input type="text" inputmode="decimal" id="sleep" value="${day.sleep?String(day.sleep).replace(".",","):""}" placeholder="8" aria-label="Kolik hodin jsi spala"><span class="unit">hodin</span>
+      <span class="chips">${[6,7,8,9].map(h=>`<button type="button" class="chip" data-sleep="${h}">${h} h</button>`).join("")}</span></div>
+      <div class="feelrow"><div class="t">Jak ses vyspala</div><div class="feel" data-feel="sleepQ">${feelBtns(day.sleepQ,"q",SLEEPQ)}</div></div></section>
+    <section class="blk c-feel"><h2>${I("smile","feel")}Připravenost</h2>
+      <div class="feelrow"><div class="t">Jak jsi připravená na dnešní den?</div><div class="feel" data-feel="morning">${feelBtns(day.morning,"m")}</div></div>
+    </section>
+    <section class="blk c-food"><h2>${I("bowl","food")}Jídlo<span class="tot" id="mealTot"></span></h2>
+      <p class="note" style="margin:0 0 8px">Měla jsi dnes tohle jídlo?</p>
+      ${MEALS.map(([k,l])=>{const st=mealState(day,k);return `<div class="mealq"><span class="ml">${l}</span><div class="yn" role="group" aria-label="${l}"><button type="button" id="m-${k}-y" data-meal="${k}" data-had="1" aria-pressed="${st===true}">Ano</button><button type="button" id="m-${k}-n" data-meal="${k}" data-had="0" aria-pressed="${st===false}">Ne</button></div></div>`}).join("")}
+    </section>
+    <section class="blk c-sand"><h2>${I("ball","sand")}Trénink na písku<span class="tot" id="sandTot"></span></h2><div id="sandList"></div></section>
+    <section class="blk c-gym"><h2>${I("dumb","gym")}Posilovna<span class="tot" id="gymTot"></span></h2><div id="gymList"></div></section>
+    <section class="blk c-feel"><h2>${I("smile","feel")}Únava a stres</h2>
+      <div class="feelrow"><div class="t">Jak moc jsi večer unavená?</div><div class="feel" data-feel="fatigue">${feelBtns(day.fatigue,"e",FATIG)}</div></div>
+      <div class="feelrow"><div class="t">Stres za celý den mimo sport (škola, práce, doma)</div><div class="feel" data-feel="stress">${feelBtns(day.stress,"s",STRESS)}</div></div>
+    </section>
+    <section class="blk c-ac"><h2>${I("pen","ac")}Poznámka</h2>
+      <textarea id="note" rows="3" placeholder="Bolesti, spánek, nálada, co se povedlo…">${esc(day.note)}</textarea></section>
+  </form>`;
+  const commit=()=>{queueSave(id,JSON.parse(JSON.stringify(day)));totals();document.querySelectorAll(".save.done").forEach(b=>{b.classList.remove("done");b.textContent="Uložit"})};
+  function totals(){
+    for(const k of ["sand","gym"])$("#"+k+"Tot").textContent=day.off?.[k]?day.off[k]:day[k].length?`${day[k].length}× · ${fmtMin(sumMin(day[k]))}`:"";
+    const c=mealsCount(day); $("#mealTot").textContent=c?`${c}/5 jídel`:"";
+  }
+  function list(kind){
+    const el=$("#"+kind+"List"); day.off=day.off||{}; day.go=day.go||{};
+    const off=day.off[kind], on=!off&&(day.go[kind]||day[kind].length>0);
+    const seg=`<div class="seg" role="group" aria-label="Trénink nebo volno?"><button type="button" class="yes" id="${kind}-yes" aria-pressed="${!!on}">Trénink</button><button type="button" class="no" id="${kind}-no" aria-pressed="${!!off}">Volno</button></div>`;
+    let body="";
+    if(off){
+      body=`<div class="offbox"><div class="h">Proč volno</div>
+        <div class="chips">${OFFR.map(r=>`<button type="button" class="chip" data-r="${r}" aria-pressed="${off===r}">${r}</button>`).join("")}</div></div>`;
+    }else if(on){
+      body=day[kind].map((s,i)=>`<div class="sess"><span class="n">${i+1}. trénink</span>
+      <input type="number" inputmode="numeric" min="0" step="5" id="${kind}-${i}" value="${s.min||""}" aria-label="Délka v minutách"><span class="unit">min</span><span class="unit dur">${s.min?"= "+fmtMin(s.min):""}</span>
+      <span class="chips">${[45,60,90,120].map(m=>`<button type="button" class="chip" data-set="${m}">${fmtMin(m)}</button>`).join("")}</span>
+      <button type="button" class="rm" data-rm="${i}" aria-label="Odebrat">×</button>
+      <div class="gdet">${kind==="gym"?`<span class="t">Co jsi dělala</span>
+        <div class="chips">${GFOCUS.map(f=>`<button type="button" class="chip" data-f="${f}" aria-pressed="${(s.focus||[]).includes(f)}">${f}</button>`).join("")}</div>`:""}
+        <span class="t">Náročnost 1–10</span>
+        <div class="rpe" role="group" aria-label="Náročnost tréninku">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button type="button" data-rpe="${n}" aria-pressed="${s.rpe===n}">${n}</button>`).join("")}</div>
+        <div class="rpel">${s.rpe?RPEL[s.rpe]:"1 = úplně lehké, 10 = na maximum"}</div>
+        <span class="t">Pocit z tréninku</span>
+        <div class="feel" data-tfeel="${i}">${feelBtns(s.feel,kind+"f"+i+"-",TFEEL)}</div></div></div>`).join("")+
+      `<div class="acts"><button type="button" class="add" id="${kind}-add">+ Další trénink</button></div>`;
+    }
+    if(on||off)body+=`<div class="acts"><button type="button" class="save" id="${kind}-save">Uložit</button></div>`;
+    el.innerHTML=seg+body;
+    $("#"+kind+"-yes").onclick=()=>{if(on){day.go[kind]=false;day[kind]=[]}else{delete day.off[kind];day.go[kind]=true;if(!day[kind].length)day[kind].push({min:kind==="sand"?90:60})}list(kind);commit()};
+    $("#"+kind+"-no").onclick=()=>{if(off){delete day.off[kind]}else{day.off[kind]="Plánované volno";day.go[kind]=false;day[kind]=[]}list(kind);commit()};
+    el.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{day.off[kind]=b.dataset.r;list(kind);commit()});
+    el.querySelectorAll(".sess").forEach((row,i)=>{
+      const inp=row.querySelector("input");
+      const du=row.querySelector(".dur");const showDu=()=>{du.textContent=day[kind][i].min?"= "+fmtMin(day[kind][i].min):""};
+      inp.oninput=()=>{day[kind][i].min=Number(inp.value)||0;showDu();commit()};
+      row.querySelectorAll("[data-set]").forEach(b=>b.onclick=()=>{inp.value=b.dataset.set;day[kind][i].min=Number(b.dataset.set);showDu();commit()});
+      row.querySelector("[data-rm]").onclick=()=>{day[kind].splice(i,1);list(kind);commit()};
+      row.querySelectorAll("[data-tfeel] button").forEach(b=>b.onclick=()=>{const v=Number(b.dataset.v),S=day[kind][i];S.feel=S.feel===v?0:v;row.querySelectorAll("[data-tfeel] button").forEach(x=>x.setAttribute("aria-pressed",String(Number(x.dataset.v)===S.feel)));commit()});
+      row.querySelectorAll("[data-rpe]").forEach(b=>b.onclick=()=>{const v=Number(b.dataset.rpe),S=day[kind][i];S.rpe=S.rpe===v?0:v;row.querySelectorAll("[data-rpe]").forEach(x=>x.setAttribute("aria-pressed",String(Number(x.dataset.rpe)===S.rpe)));row.querySelector(".rpel").textContent=S.rpe?RPEL[S.rpe]:"1 = úplně lehké, 10 = na maximum";commit()});
+      row.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{const f=b.dataset.f,arr=day[kind][i].focus=day[kind][i].focus||[];const j=arr.indexOf(f);if(j<0)arr.push(f);else arr.splice(j,1);b.setAttribute("aria-pressed",String(j<0));commit()});
+    });
+    const sv=$("#"+kind+"-save"); if(sv)sv.onclick=async()=>{
+      clearTimeout(pending["days"+id]); dirty[id]=JSON.parse(JSON.stringify(day));
+      sv.disabled=true; sv.textContent="Ukládám…";
+      try{await flush(id,"days"); sv.classList.add("done"); sv.textContent="Uloženo ✓"}
+      catch(e){sv.textContent="Neuloženo – zkusit znovu"}
+      sv.disabled=false;
+    };
+    const ad=$("#"+kind+"-add"); if(ad)ad.onclick=()=>{day[kind].push({min:kind==="sand"?90:60});list(kind);commit();const ins=el.querySelectorAll("input");ins[ins.length-1].focus()};
+  }
+  list("sand");list("gym");totals();
+  document.querySelectorAll("[data-feel]").forEach(g=>g.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    const f=g.dataset.feel,v=Number(b.dataset.v); day[f]=day[f]===v?0:v;
+    g.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(Number(x.dataset.v)===day[f])));commit()}));
+  document.querySelectorAll("[data-meal]").forEach(b=>b.onclick=()=>{const k=b.dataset.meal,h=b.dataset.had==="1";const cur=mealState(day,k);if(cur===h)delete day.meals[k];else day.meals[k]={had:h};const st=mealState(day,k);document.querySelectorAll(`[data-meal="${k}"]`).forEach(x=>x.setAttribute("aria-pressed",String(st===(x.dataset.had==="1"))));commit()});
+  $("#note").oninput=e=>{day.note=e.target.value;commit()};
+  $("#sleep").oninput=e=>{day.sleep=num(e.target.value);commit()};
+  document.querySelectorAll("[data-sleep]").forEach(b=>b.onclick=()=>{$("#sleep").value=b.dataset.sleep;day.sleep=Number(b.dataset.sleep);commit()});
+  const gr=$("#goReview"); if(gr)gr.onclick=()=>{state.weekStart=key(monday(d));state.scrollReview=true;location.hash="#tyden"};
+  const go=n=>{state.cur=key(addDays(d,n));renderDay(true)};
+  $("#prev").onclick=()=>go(-1); $("#next").onclick=()=>go(1);
+  const gt=$("#goToday"); if(gt)gt.onclick=()=>{state.cur=key(today());renderDay(true)};
+}
+const FACES=["","😫","😕","😐","🙂","😄"];
+function feelBtns(v,p,L){L=L||FEEL;const inv=L===FATIG||L===STRESS;return [1,2,3,4,5].map(n=>`<button type="button" id="${p}${n}" data-v="${n}" aria-pressed="${v===n}" aria-label="${n} – ${L[n]}"><b class="face" aria-hidden="true">${FACES[inv?6-n:n]}</b><small>${L[n]}</small></button>`).join("")}
+
+/* ---------- aggregates ---------- */
+function agg(ids){
+  const r={days:0,sandN:0,sandMin:0,gymN:0,gymMin:0,mSum:0,mN:0,eSum:0,eN:0,meals:0,slSum:0,slN:0,sandOff:0,gymOff:0,rest:0,load:0,rpeSum:0,rpeN:0,stSum:0,stN:0,sqSum:0,sqN:0};
+  for(const id of ids){const d=getDay(id);if(!hasData(d))continue;r.days++;
+    if(d.off?.sand)r.sandOff++; if(d.off?.gym)r.gymOff++;
+    if(!(d.sand||[]).length&&!(d.gym||[]).length&&(d.off?.sand||d.off?.gym))r.rest++;
+    r.sandN+=(d.sand||[]).length;r.sandMin+=sumMin(d.sand);r.gymN+=(d.gym||[]).length;r.gymMin+=sumMin(d.gym);
+    if(d.morning){r.mSum+=d.morning;r.mN++} if(d.fatigue){r.eSum+=d.fatigue;r.eN++}
+    r.meals+=mealsCount(d); if(d.sleep){r.slSum+=d.sleep;r.slN++}
+    if(d.stress){r.stSum+=d.stress;r.stN++} if(d.sleepQ){r.sqSum+=d.sleepQ;r.sqN++}
+    for(const x of [...(d.sand||[]),...(d.gym||[])])if(x.rpe){r.rpeSum+=x.rpe;r.rpeN++;r.load+=(Number(x.min)||0)/60*x.rpe}}
+  r.m=r.mN?r.mSum/r.mN:0;r.e=r.eN?r.eSum/r.eN:0;r.sl=r.slN?r.slSum/r.slN:0;r.st=r.stN?r.stSum/r.stN:0;r.sq=r.sqN?r.sqSum/r.sqN:0;r.rpe=r.rpeN?r.rpeSum/r.rpeN:0;r.load=Math.round(r.load*10)/10;return r;
+}
+const pill=(v,inv)=>v?`<span class="pill f${inv?6-Math.round(v):Math.round(v)}">${Number.isInteger(v)?v:v.toFixed(1).replace(".",",")}</span>`:"–";
+const cell=(d,k)=>{if(d.off?.[k])return `<span class="offtag">${esc(d.off[k])}</span>`;let h=nx((d[k]||[]).length,sumMin(d[k]));const rp=(d[k]||[]).filter(x=>x.rpe).map(x=>x.rpe);if(rp.length)h+=`<div class="gtags">náročnost ${rp.join(" + ")}</div>`;const tf=(d[k]||[]).filter(x=>x.feel).map(x=>TFEEL[x.feel].toLowerCase());if(tf.length)h+=`<div class="gtags">pocit ${tf.join(", ")}</div>`;if(k==="gym"){const f=[...new Set((d.gym||[]).flatMap(x=>x.focus||[]))];if(f.length)h+=`<div class="gtags">${esc(f.join(", "))}</div>`}return h};
+const ld=v=>v?String(v).replace(".",","):"–";
+const dec=v=>v.toFixed(1).replace(".",",");
+const nx=(n,m)=>n?`${n}× · ${fmtMin(m)}`:"–";
+
+/* ---------- WEEK ---------- */
+
+function renderWeek(force){
+  const wf=$("#weekform");
+  if(!force&&wf&&wf.dataset.id===state.weekStart&&(wf.contains(document.activeElement)||wdirty[state.weekStart]))return;
+  const s=parse(state.weekStart), e=addDays(s,6), tk=key(today());
+  const wid=state.weekStart, rv=JSON.parse(JSON.stringify(getWeek(wid)||{rating:0}));
+  const ended=today()>=addDays(s,6);
+  const ids=[...Array(7)].map((_,i)=>key(addDays(s,i)));
+  const rows=ids.map((id,i)=>{const d=getDay(id);const c=hasData(d);
+    return `<tr data-go="${id}" class="${id===tk?"today":""}"><td>${DSHORT[i]} ${parse(id).getDate()}.${parse(id).getMonth()+1}.${d&&d.sample?'<span class="samplechip">ukázka</span>':""}</td>
+    ${c?`<td>${d.sleep?fmtH(d.sleep):"–"} ${d.sleepQ?pill(d.sleepQ):""}</td><td>${cell(d,"sand")}</td><td>${cell(d,"gym")}</td><td>${pill(d.morning)}</td><td>${pill(d.fatigue,1)}</td><td>${pill(d.stress,1)}</td><td>${mealsCount(d)}/5</td>`:`<td class="empty" colspan="7" style="text-align:center">nevyplněno</td>`}</tr>`}).join("");
+  const a=agg(ids);
+  $("#view").innerHTML=`
+  <div class="rangebar"><button class="icon" id="wp" aria-label="Předchozí týden">‹</button>
+    <div class="lbl">${isoWeek(s)}. týden<div class="sub" style="font-family:var(--f-body);font-weight:400;font-size:13px;text-transform:none;color:var(--muted)">${s.getDate()}. ${MONTHS_G[s.getMonth()]} – ${e.getDate()}. ${MONTHS_G[e.getMonth()]} ${e.getFullYear()}${rv.rating?` · hodnocení <span class="pill f${rv.rating}">${rv.rating}</span> ${RATE[rv.rating]}`:""}</div></div>
+    <button class="icon" id="wn" aria-label="Další týden">›</button></div>
+  ${tiles(a,7,rv.recov||[])}
+  <div class="tbl days"><table><thead><tr><th>Den</th><th>Spánek</th><th>Trénink na písku</th><th>Posilovna</th><th>Připravenost</th><th>Únava</th><th>Stres</th><th>Jídla</th></tr></thead>
+  <tbody>${rows}</tbody>
+  </table></div>
+  <p class="note">Klepnutím na den ho otevřeš. Souhrn týdne najdeš v dlaždicích nahoře. Připravenost a kvalita spánku: 1 špatně, 5 výborně. Únava: 1 vůbec, 5 úplně vyčerpaná. Stres: 1 žádný, 5 obrovský. Jídla = kolik z pěti jídel dne měla.</p>
+  <section class="blk c-sand"><h2>${I("chart","sand")}Tréninkové minuty po dnech</h2>
+    <div class="legend"><span><i class="dot sand"></i>Trénink na písku</span><span><i class="dot gym"></i>Posilovna</span></div>
+    ${chart(ids,true)}</section>
+  <section class="blk c-sleep"><h2>${I("moon","sleep")}Spánek</h2>
+    <div class="legend"><span><i class="dot sl"></i>Hodiny spánku</span><span>čárkovaně 8 h</span></div>
+    ${sleepChart(ids)}</section>
+  <section class="blk c-feel"><h2>${I("smile","feel")}Připravenost a únava</h2>
+    <div class="legend"><span><i class="dot am"></i>Připravenost ráno (víc = lépe)</span><span><i class="dot pm"></i>Únava večer (méně = lépe)</span></div>
+    ${feelChart(ids)}</section>
+  <section class="blk c-feel" id="review"><h2>${I("star","feel")}Hodnocení týdne${rv.sample?'<span class="samplechip">ukázka</span>':""}<span class="tot">${ended?"":"vyplňte v neděli odpoledne nebo večer"}</span></h2>
+   <form id="weekform" data-id="${wid}" onsubmit="return false">
+    <div class="feelrow"><div class="t">Jak celkově hodnotíš týden</div><div class="feel" id="wrate">${feelBtns(rv.rating,"w",RATE)}</div></div>
+    <div class="feelrow"><div class="t">Regenerace tento týden</div><div class="chips" id="wrec">${RECOV.map(r=>`<button type="button" class="chip" data-rec="${r}" aria-pressed="${(rv.recov||[]).includes(r)}">${r}</button>`).join("")}</div></div>
+    ${REVIEW.map(([k,l,ph])=>`<div class="feelrow"><label class="t" for="rv-${k}" style="display:block">${l}</label><textarea id="rv-${k}" data-rv="${k}" rows="2" placeholder="${ph}">${esc(rv[k])}</textarea></div>`).join("")}
+   </form></section>`;
+  const wcommit=()=>queueSave(wid,JSON.parse(JSON.stringify(rv)),"weeks");
+  $("#wrate").querySelectorAll("button").forEach(b=>b.onclick=()=>{const v=Number(b.dataset.v);rv.rating=rv.rating===v?0:v;$("#wrate").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(Number(x.dataset.v)===rv.rating)));wcommit()});
+  document.querySelectorAll("[data-rec]").forEach(b=>b.onclick=()=>{const r=b.dataset.rec,arr=rv.recov=rv.recov||[];const j=arr.indexOf(r);if(j<0)arr.push(r);else arr.splice(j,1);b.setAttribute("aria-pressed",String(j<0));wcommit()});
+  document.querySelectorAll("[data-rv]").forEach(t=>t.oninput=()=>{rv[t.dataset.rv]=t.value;wcommit()});
+  if(state.scrollReview){state.scrollReview=false;setTimeout(()=>{$("#review").scrollIntoView({block:"start"});$("#w1").focus({preventScroll:true})},50)}
+  $("#wp").onclick=()=>{state.weekStart=key(addDays(s,-7));renderWeek(true)};
+  $("#wn").onclick=()=>{state.weekStart=key(addDays(s,7));renderWeek(true)};
+  document.querySelectorAll("[data-go]").forEach(r=>r.onclick=()=>{state.cur=r.dataset.go;location.hash="#den"});
+}
+function tiles(a,total,recov){
+  return `<div class="tiles">
+   <div class="tile t-sleep"><div class="k">Spánek</div><div class="v">${a.sl?fmtH(a.sl):"–"}</div><div class="s">průměr za noc${a.sq?` · kvalita ø ${dec(a.sq)}`:""}</div></div>
+   <div class="tile t-ac"><div class="k">Tréninková zátěž</div><div class="v">${fmtMin(a.sandMin+a.gymMin)}</div><div class="s">celkem trénink${a.rpe?` · ø náročnost ${dec(a.rpe)} · ${ld(a.load)} bodů zátěže`:" · vyplňte náročnost u tréninků"}</div></div>
+   <div class="tile t-sand"><div class="k">Trénink na písku</div><div class="v">${a.sandN}×</div><div class="s">${fmtMin(a.sandMin)}</div></div>
+   <div class="tile t-gym"><div class="k">Posilovna</div><div class="v">${a.gymN}×</div><div class="s">${fmtMin(a.gymMin)}</div></div>
+   <div class="tile t-rec"><div class="k">Regenerace</div><div class="v">${a.rest}</div><div class="s">${dny(a.rest)} volna${recov.length?` · ${esc(recov.join(", "))}`:" · co jsi dělala, vyplníš v hodnocení týdne"}</div></div>
+   <div class="tile t-feel"><div class="k">Připravenost / únava</div><div class="v">${a.m?a.m.toFixed(1).replace(".",","):"–"} / ${a.e?a.e.toFixed(1).replace(".",","):"–"}</div><div class="s">průměr 1–5 · u únavy je méně lépe</div></div>
+   <div class="tile t-feel"><div class="k">Stres mimo sport</div><div class="v">${a.st?dec(a.st):"–"}</div><div class="s">průměr · 1 žádný, 5 obrovský</div></div>
+   <div class="tile t-food"><div class="k">Jídlo</div><div class="v">${a.meals}/${total*5}</div><div class="s">snědených jídel · ${a.days}/${total} dní zapsáno</div></div>
+  </div>`;
+}
+
+/* ---------- MONTH ---------- */
+function renderMonth(){
+  const [y,m]=state.month.split("-").map(Number);
+  const first=new Date(y,m-1,1), n=new Date(y,m,0).getDate();
+  const ids=[...Array(n)].map((_,i)=>key(new Date(y,m-1,i+1)));
+  const a=agg(ids);
+  // weeks touching this month
+  let ws=monday(first), wk=[];
+  while(ws<=new Date(y,m-1,n)){const wid=[...Array(7)].map((_,i)=>addDays(ws,i)).filter(d=>d.getMonth()===m-1).map(key);wk.push({s:new Date(ws),ids:wid,a:agg(wid)});ws=addDays(ws,7)}
+  const rs=wk.map(w=>getWeek(key(w.s))?.rating).filter(Boolean), mr=rs.length?rs.reduce((x,y)=>x+y,0)/rs.length:0;
+  $("#view").innerHTML=`
+  <div class="rangebar"><button class="icon" id="mp" aria-label="Předchozí měsíc">‹</button>
+    <div class="lbl">${MONTHS[m-1]} ${y}</div><button class="icon" id="mn" aria-label="Další měsíc">›</button></div>
+  ${tiles(a,n,[...new Set(wk.flatMap(w=>getWeek(key(w.s))?.recov||[]))])}
+  <h3 class="sec">Po týdnech</h3>
+  <div class="tbl"><table><thead><tr><th>Týden</th><th>Hodnocení</th><th>Spánek</th><th>Trénink na písku</th><th>Posilovna</th><th>Zátěž</th><th>Připravenost</th><th>Únava</th><th>Stres</th><th>Jídla</th><th>Zapsáno</th></tr></thead>
+  <tbody>${wk.map(w=>`<tr data-w="${key(w.s)}"><td>${isoWeek(w.s)}. (${parse(w.ids[0]).getDate()}.–${parse(w.ids[w.ids.length-1]).getDate()}.)</td><td>${pill(getWeek(key(w.s))?.rating||0)}</td><td>${w.a.sl?"ø "+fmtH(w.a.sl):"–"}</td><td>${nx(w.a.sandN,w.a.sandMin)}</td><td>${nx(w.a.gymN,w.a.gymMin)}</td><td>${ld(w.a.load)}</td><td>${pill(w.a.m)}</td><td>${pill(w.a.e,1)}</td><td>${pill(w.a.st,1)}</td><td>${w.a.meals}/${w.ids.length*5}</td><td>${w.a.days}/${w.ids.length}</td></tr>`).join("")}</tbody>
+  <tfoot><tr><td>Měsíc</td><td>${pill(mr)}</td><td>${a.sl?"ø "+fmtH(a.sl):"–"}</td><td>${nx(a.sandN,a.sandMin)}</td><td>${nx(a.gymN,a.gymMin)}</td><td>${ld(a.load)}</td><td>${pill(a.m)}</td><td>${pill(a.e,1)}</td><td>${pill(a.st,1)}</td><td>${a.meals}/${n*5}</td><td>${a.days}/${n}</td></tr></tfoot></table></div>
+  <p class="note">Klepnutím na týden otevřeš jeho detail a hodnocení. Hodnocení měsíce je průměr týdenních hodnocení. Zátěž = hodiny tréninku × náročnost (1–10), např. 1,5 h při náročnosti 6 = 9.</p>
+  <section class="blk c-sand"><h2>${I("chart","sand")}Tréninkové minuty po dnech</h2>
+    <div class="legend"><span><i class="dot sand"></i>Trénink na písku</span><span><i class="dot gym"></i>Posilovna</span></div>
+    <div style="overflow-x:auto">${chart(ids)}</div></section>
+  <section class="blk c-gym"><h2>${I("pulse","gym")}Tréninková zátěž po týdnech</h2>
+    <div class="legend"><span><i class="dot ac"></i>Zátěž = hodiny × náročnost</span></div>
+    ${loadChart(wk)}</section>`;
+  $("#mp").onclick=()=>{state.month=key(new Date(y,m-2,1)).slice(0,7);renderMonth()};
+  $("#mn").onclick=()=>{state.month=key(new Date(y,m,1)).slice(0,7);renderMonth()};
+  document.querySelectorAll("[data-w]").forEach(r=>r.onclick=()=>{state.weekStart=r.dataset.w;location.hash="#tyden"});
+}
+function svgWrap(W,H,g,label){return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block" role="img" aria-label="${label}">${g}</svg>`}
+function sleepChart(ids){
+  const W=360,H=160,L=34,B=22,T=18,ph=H-B-T;
+  const v=ids.map(id=>Number(getDay(id)?.sleep)||0); const top=Math.max(10,Math.ceil(Math.max(...v)/2)*2);
+  const y=h=>T+ph-(h/top)*ph, bw=(W-L-6)/7; let g="";
+  for(let t=0;t<=top;t+=2)g+=`<line x1="${L}" x2="${W-4}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)"/><text x="${L-6}" y="${y(t)+3}" text-anchor="end">${t} h</text>`;
+  v.forEach((h,i)=>{const x=L+i*bw+bw*.2,w=bw*.6;
+    if(h){g+=`<rect class="tipt" data-day="${ids[i]}" data-tip="${DAYS[i]}: spánek ${fmtH(h)}" x="${x}" y="${y(h)}" width="${w}" height="${y(0)-y(h)}" rx="2" fill="var(--ink)" fill-opacity=".75"/><text x="${x+w/2}" y="${y(h)-4}" text-anchor="middle">${fmtShort(h*60)}</text>`}
+    g+=`<text x="${x+w/2}" y="${H-6}" text-anchor="middle">${DSHORT[i]}</text>`});
+  g+=`<line x1="${L}" x2="${W-4}" y1="${y(8)}" y2="${y(8)}" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  return svgWrap(W,H,g,"Hodiny spánku po dnech");
+}
+function feelChart(ids){
+  const W=360,H=160,L=34,B=22,T=12,ph=H-B-T,bw=(W-L-6)/7;
+  const y=v=>T+ph-((v-1)/4)*ph, X=i=>L+i*bw+bw/2; let g="";
+  for(let t=1;t<=5;t++)g+=`<line x1="${L}" x2="${W-4}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)"/><text x="${L-6}" y="${y(t)+3}" text-anchor="end">${t}</text>`;
+  ids.forEach((id,i)=>g+=`<text x="${X(i)}" y="${H-6}" text-anchor="middle">${DSHORT[i]}</text>`);
+  for(const [k,c,lab,LBL] of [["morning","var(--am)","Připravenost",FEEL],["fatigue","var(--pm)","Únava",FATIG]]){
+    const pts=ids.map((id,i)=>{const v=getDay(id)?.[k];return v?[X(i),y(v),v,id]:null});
+    for(let i=1;i<7;i++)if(pts[i]&&pts[i-1])g+=`<line x1="${pts[i-1][0]}" y1="${pts[i-1][1]}" x2="${pts[i][0]}" y2="${pts[i][1]}" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/>`;
+    pts.forEach(p=>{if(p)g+=`<g class="tipt" data-day="${p[3]}" data-tip="${DAYS[dow(parse(p[3]))]} ${parse(p[3]).getDate()}.${parse(p[3]).getMonth()+1}. · ${lab}: ${p[2]} – ${LBL[p[2]]}"><circle cx="${p[0]}" cy="${p[1]}" r="12" fill="transparent"/><circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="${c}" stroke="var(--surface)" stroke-width="1.5"/></g>`});
+  }
+  return svgWrap(W,H,g,"Připravenost a únava po dnech");
+}
+function loadChart(wk){
+  const W=360,H=160,L=40,B=22,T=18,ph=H-B-T,n=wk.length,bw=(W-L-6)/n;
+  const v=wk.map(w=>w.a.load); const mx=Math.max(...v);
+  if(!mx)return `<p class="note">Zatím bez dat. Vyplňte u tréninků náročnost 1–10.</p>`;
+  const step=Math.pow(10,Math.floor(Math.log10(mx)))*(mx/Math.pow(10,Math.floor(Math.log10(mx)))>5?2:1)/1;
+  const top=Math.ceil(mx/step)*step, y=a=>T+ph-(a/top)*ph; let g="";
+  for(let t=0;t<=top;t+=step)g+=`<line x1="${L}" x2="${W-4}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)"/><text x="${L-6}" y="${y(t)+3}" text-anchor="end">${Math.round(t*10)/10}</text>`;
+  v.forEach((a,i)=>{const x=L+i*bw+bw*.22,w=bw*.56;
+    if(a)g+=`<rect class="tipt" data-week="${key(wk[i].s)}" data-tip="${isoWeek(wk[i].s)}. týden: zátěž ${ld(a)}" x="${x}" y="${y(a)}" width="${w}" height="${y(0)-y(a)}" rx="2" fill="var(--accent)"/><text x="${x+w/2}" y="${y(a)-4}" text-anchor="middle">${ld(a)}</text>`;
+    g+=`<text x="${x+w/2}" y="${H-6}" text-anchor="middle">${isoWeek(wk[i].s)}. týden</text>`});
+  return svgWrap(W,H,g,"Tréninková zátěž po týdnech");
+}
+function chart(ids,week){
+  const W=week?360:Math.max(340,ids.length*18+40),H=170,L=34,B=22,T=week?20:10,ph=H-B-T;
+  const vals=ids.map(id=>{const d=getDay(id);return{s:sumMin(d?.sand),g:sumMin(d?.gym)}});
+  const max=Math.max(60,...vals.map(v=>v.s+v.g)); const top=Math.ceil(max/60)*60;
+  const bw=(W-L-6)/ids.length;
+  let g="";
+  for(let t=0;t<=top;t+=60){const yy=T+ph-(t/top)*ph;g+=`<line x1="${L}" x2="${W-4}" y1="${yy}" y2="${yy}" stroke="var(--line)" stroke-width="1"/><text x="${L-6}" y="${yy+3}" text-anchor="end">${t/60} h</text>`}
+  vals.forEach((v,i)=>{const x=L+i*bw+bw*.18,w=bw*.64;const hs=(v.s/top)*ph,hg=(v.g/top)*ph;
+    if(v.s)g+=`<rect class="tipt" data-day="${ids[i]}" data-tip="${parse(ids[i]).getDate()}.${parse(ids[i]).getMonth()+1}.: písek ${fmtMin(v.s)}" x="${x}" y="${T+ph-hs}" width="${w}" height="${hs}" fill="var(--sand)" rx="2"></rect>`;
+    if(v.g)g+=`<rect class="tipt" data-day="${ids[i]}" data-tip="${parse(ids[i]).getDate()}.${parse(ids[i]).getMonth()+1}.: posilovna ${fmtMin(v.g)}" x="${x}" y="${T+ph-hs-hg}" width="${w}" height="${hg}" fill="var(--gym)" rx="2"></rect>`;
+    const dd=parse(ids[i]); if(week){g+=`<text x="${x+w/2}" y="${H-6}" text-anchor="middle">${DSHORT[i]}</text>`;const tot=v.s+v.g;if(tot)g+=`<text x="${x+w/2}" y="${T+ph-hs-hg-4}" text-anchor="middle">${fmtShort(tot)}</text>`}else if(dd.getDate()===1||dow(dd)===0)g+=`<text x="${x+w/2}" y="${H-6}" text-anchor="middle">${dd.getDate()}.</text>`});
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block" role="img" aria-label="Minuty tréninku po dnech">${g}</svg>`;
+}
+
+/* ---------- COACH ---------- */
+function renderCoach(){
+  const ids=Object.keys(docs).sort(); const wset=new Set([...ids.map(id=>key(monday(parse(id)))),...Object.keys(weeks)]);
+  const ws=[...wset].sort().reverse();
+  const rows=ws.map(w=>{const d0=parse(w);const wid=[...Array(7)].map((_,i)=>key(addDays(d0,i)));const a=agg(wid);const r=getWeek(w);
+    return `<tr data-w="${w}"><td>${isoWeek(d0)}. (${d0.getDate()}.${d0.getMonth()+1}.)${r?.sample||wid.some(i=>docs[i]?.sample)?'<span class="samplechip">ukázka</span>':""}</td><td>${pill(r?.rating||0)}</td><td>${a.sl?fmtH(a.sl):"–"}</td><td>${nx(a.sandN,a.sandMin)}</td><td>${nx(a.gymN,a.gymMin)}</td><td>${ld(a.load)}</td><td>${pill(a.m)}</td><td>${pill(a.e,1)}</td><td>${pill(a.st,1)}</td><td>${a.rest}</td><td>${a.meals}/${a.days*5||35}</td><td>${a.days}/7</td></tr>`}).join("");
+  $("#view").innerHTML=`
+  <div class="banner"><span>Tuhle záložku vidíš jen ty jako trenér. Hráčky ji nemají a navzájem si data nevidí.</span></div>
+  <h3 class="sec" style="margin-top:4px">Přehled hráček</h3>
+  <div class="seg" role="group" aria-label="Období" style="margin-bottom:8px"><button type="button" class="yes" id="tm7" aria-pressed="${state.teamMode!=="m"}">Posledních 7 dní</button><button type="button" class="yes" id="tmM" aria-pressed="${state.teamMode==="m"}">Měsíc</button></div>
+  <div class="rangebar" id="tmBar" ${state.teamMode==="m"?"":"hidden"}><button class="icon" id="tmp" aria-label="Předchozí měsíc">‹</button><div class="lbl" id="tmLbl"></div><button class="icon" id="tmn" aria-label="Další měsíc">›</button></div>
+  <div id="teamTbl"><p class="note">Načítám hráčky…</p></div>
+  <div id="coachCharts"></div>
+  <h3 class="sec">Všechny týdny · ${esc(pname(selPid))}</h3>
+  ${ws.length?`<div class="tbl"><table><thead><tr><th>Týden</th><th>Hodnocení</th><th>ø Spánek</th><th>Trénink na písku</th><th>Posilovna</th><th>Zátěž</th><th>Připravenost</th><th>Únava</th><th>Stres</th><th>Volno</th><th>Jídla</th><th>Zapsáno</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <p class="note">Nejnovější týden nahoře. Klepnutím otevřeš detail týdne.</p>`:`<p class="note">Zatím žádné záznamy. Až hráčka začne zapisovat, objeví se tu její týdny.</p>`}
+  <h3 class="sec">Zápisy · ${esc(pname(selPid))}</h3>
+  <div class="rangebar"><button class="icon" id="lgp" aria-label="Předchozí měsíc">‹</button><div class="lbl" id="lgLbl"></div><button class="icon" id="lgn" aria-label="Další měsíc">›</button></div>
+  <div id="logList"></div>
+  <details class="blk c-ac exp" id="exportBlk" hidden><summary>${I("down","ac")}Stáhnout jako tabulku (CSV)</summary><p class="note" style="margin:0 0 10px">Stáhne zapsané dny nebo týdenní hodnocení jako tabulku CSV, která se otevře v Excelu i Google Tabulkách.</p>
+    <div class="acts"><button type="button" class="save" id="expDays">Dny vybrané hráčky</button><button type="button" class="skip" id="expAll">Dny všech hráček</button><button type="button" class="skip" id="expWeeks">Hodnocení týdnů</button></div>
+    <div class="note" id="expMsg"></div></details>`;
+  document.querySelectorAll("[data-w]").forEach(r=>r.onclick=()=>{state.weekStart=r.dataset.w;location.hash="#tyden"});
+  wireExport(); renderLog();
+  state.teamMonth=state.teamMonth||key(today()).slice(0,7);
+  const setMode=m=>{state.teamMode=m;$("#tm7").setAttribute("aria-pressed",String(m!=="m"));$("#tmM").setAttribute("aria-pressed",String(m==="m"));$("#tmBar").hidden=m!=="m";renderTeam()};
+  $("#tm7").onclick=()=>setMode("7"); $("#tmM").onclick=()=>setMode("m");
+  const mv=n=>{const [y,m]=state.teamMonth.split("-").map(Number);state.teamMonth=key(new Date(y,m-1+n,1)).slice(0,7);renderTeam()};
+  $("#tmp").onclick=()=>mv(-1); $("#tmn").onclick=()=>mv(1);
+  renderTeam();
+}
+function renderLog(){
+  state.logMonth=state.logMonth||key(today()).slice(0,7);
+  const [y,m]=state.logMonth.split("-").map(Number); $("#lgLbl").textContent=MONTHS[m-1]+" "+y;
+  $("#lgp").onclick=()=>{state.logMonth=key(new Date(y,m-2,1)).slice(0,7);renderLog()};
+  $("#lgn").onclick=()=>{state.logMonth=key(new Date(y,m,1)).slice(0,7);renderLog()};
+  const n=new Date(y,m,0).getDate(); const ids=[...Array(n)].map((_,i)=>key(new Date(y,m-1,n-i)));
+  const fmtD=id=>{const d=parse(id);return DSHORT[dow(d)]+" "+d.getDate()+"."+(d.getMonth()+1)+"."};
+  const tr=(d,k)=>{if(d.off?.[k])return `<span class="offtag">Volno – ${esc(d.off[k])}</span>`;const L=d[k]||[];if(!L.length)return "–";
+    return L.map(x=>`${fmtMin(x.min)}${x.rpe?` · náročnost ${x.rpe}`:""}${x.feel?` · pocit ${pill(x.feel)} ${TFEEL[x.feel].toLowerCase()}`:""}${(x.focus||[]).length?` · ${esc(x.focus.join(", "))}`:""}`).join("<br>")};
+  let h="";
+  for(const id of ids){
+    const d=parse(id);
+    if(dow(d)===6){const w=weeks[key(monday(d))];if(hasWeek(w)){h+=`<div class="lweek"><h4>${I("star","feel")}Hodnocení ${isoWeek(d)}. týdne ${w.rating?`<span class="pill f${w.rating}">${w.rating}</span> <span class="tag">${RATE[w.rating]}</span>`:""}</h4>
+      ${(w.recov||[]).length?`<div class="lrow" style="--c:var(--rec)"><span class="k">Regenerace</span><span class="v">${esc(w.recov.join(", "))}</span></div>`:""}
+      ${REVIEW.filter(([k])=>(w[k]||"").trim()).map(([k,l])=>`<div class="lrow"><span class="k">${l}</span><span class="v">${esc(w[k])}</span></div>`).join("")}</div>`}}
+    const x=docs[id]; if(!hasData(x))continue;
+    const mline=MEALS.map(([k,l])=>{const st=mealState(x,k);return `<span class="mtag ${st===true?"y":st===false?"n":"u"}">${st===true?"✓":st===false?"✗":"·"} ${l.replace("Dopolední svačina","Dop. svačina").replace("Odpolední svačina","Odp. svačina")}</span>`}).join("");
+    h+=`<div class="lday"><div class="hd"><span class="dt">${fmtD(id)}</span>${x.sample?'<span class="samplechip">ukázka</span>':""}</div>
+      <div class="lrow" style="--c:var(--sleep)"><span class="k">Spánek</span><span class="v">${x.sleep?fmtH(x.sleep):"–"} ${x.sleepQ?pill(x.sleepQ)+` <span class="tag">${SLEEPQ[x.sleepQ]}</span>`:""}</span></div>
+      <div class="lrow" style="--c:var(--feel)"><span class="k">Stav</span><span class="v">připravenost ${pill(x.morning)} únava ${pill(x.fatigue,1)} stres ${pill(x.stress,1)}</span></div>
+      <div class="lrow" style="--c:var(--sand)"><span class="k">Písek</span><span class="v">${tr(x,"sand")}</span></div>
+      <div class="lrow" style="--c:var(--gym)"><span class="k">Posilovna</span><span class="v">${tr(x,"gym")}</span></div>
+      <div class="lrow" style="--c:var(--food)"><span class="k">Jídla ${mealsCount(x)}/5</span><span class="v mtags">${mline}</span></div>
+      ${(x.note||"").trim()?`<div class="lnote">${esc(x.note)}</div>`:""}</div>`;
+  }
+  $("#logList").innerHTML=h?`<div class="log">${h}</div>`:`<p class="note">V tomhle měsíci zatím nic nezapsala.</p>`;
+}
+async function fetchAll(pid){const [d,w]=await Promise.all([DB.collection("players/"+pid+"/days").get(),DB.collection("players/"+pid+"/weeks").get()]);
+  const o={days:{},weeks:{}};d.docs.forEach(x=>{if(x.exists)o.days[x.id]=x.data()});w.docs.forEach(x=>{if(x.exists)o.weeks[x.id]=x.data()});return o}
+async function renderTeam(){
+  const el=$("#teamTbl"); if(!el)return;
+  if(!DB){el.innerHTML="";return}
+  if(!players.length){el.innerHTML=`<p class="note">Zatím tu není žádná hráčka. Pošli hráčce odkaz na aplikaci. Po prvním přihlášení se tu objeví.</p>`;return}
+  const t=today(), isM=state.teamMode==="m";
+  let last, total;
+  if(isM){const [y,m]=state.teamMonth.split("-").map(Number);total=new Date(y,m,0).getDate();last=[...Array(total)].map((_,i)=>key(new Date(y,m-1,i+1)));const L=$("#tmLbl");if(L)L.textContent=MONTHS[m-1]+" "+y}
+  else{total=7;last=[...Array(7)].map((_,i)=>key(addDays(t,i-6)))}
+  const token=Symbol(); renderTeam.tok=token;
+  const rows=[], stats=[];
+  for(const p of players){let o;try{o=await fetchAll(p.id)}catch(e){continue}
+    const saveD=docs,saveDirty={...dirty};docs=o.days;for(const k in dirty)delete dirty[k];const a=agg(last);docs=saveD;Object.assign(dirty,saveDirty);
+    const ld0=Object.keys(o.days).sort().pop();
+    const rs=Object.entries(o.weeks).filter(([w])=>last.includes(w)||last.includes(key(addDays(parse(w),6)))).map(([,w])=>w.rating).filter(Boolean);
+    const rt=rs.length?rs.reduce((x,y)=>x+y,0)/rs.length:0;
+    stats.push({p,a,o});
+    rows.push(`<tr data-pid="${esc(p.id)}"><td>${esc(pname(p.id))}</td><td>${a.days}/${total}</td><td>${a.sl?fmtH(a.sl):"–"}</td><td>${nx(a.sandN,a.sandMin)}</td><td>${nx(a.gymN,a.gymMin)}</td><td>${ld(a.load)}</td><td>${a.rest}</td><td>${a.meals?a.meals+"/"+a.days*5:"–"}</td><td>${pill(a.m)}</td><td>${pill(a.e,1)}</td><td>${pill(a.st,1)}</td>${isM?`<td>${pill(rt)}</td>`:""}<td>${ld0?parse(ld0).getDate()+"."+(parse(ld0).getMonth()+1)+".":"–"}</td></tr>`)}
+  if(renderTeam.tok!==token)return;
+  const el2=$("#teamTbl"); if(!el2)return;
+  el2.innerHTML=`<div class="tbl"><table><thead><tr><th>Hráčka</th><th>Zapsáno</th><th>ø Spánek</th><th>Trénink na písku</th><th>Posilovna</th><th>Zátěž</th><th>Volno</th><th>Jídla</th><th>Připravenost</th><th>Únava</th><th>Stres</th>${isM?"<th>Hodnocení týdnů</th>":""}<th>Poslední zápis</th></tr></thead><tbody>${rows.join("")}</tbody></table></div><p class="note">Klepnutím na hráčku přepneš celou aplikaci na její deník.</p>`;
+  el2.querySelectorAll("[data-pid]").forEach(r=>r.onclick=()=>{$("#psel").value=r.dataset.pid;selectPlayer(r.dataset.pid)});
+  const cc=$("#coachCharts"); if(cc)cc.innerHTML=coachCharts(stats,isM?MONTHS[Number(state.teamMonth.split("-")[1])-1]:"posledních 7 dní",last);
+}
+const PCOL=["var(--accent)","var(--feel)","var(--gym)","var(--food)","var(--sleep)","var(--sand)","var(--rec)","var(--bad)"];
+function weekStats(o,mon){const ids=[...Array(7)].map((_,i)=>key(addDays(mon,i)));const sd=docs,sv={...dirty};docs=o.days;for(const k in dirty)delete dirty[k];const a=agg(ids);docs=sd;Object.assign(dirty,sv);return a}
+const kload=(d,k)=>(d?.[k]||[]).reduce((t,x)=>t+(Number(x.min)||0)/60*(x.rpe||0),0);
+const kmin=(d,k)=>sumMin(d?.[k]);
+function dayLines(stats,days,k,col){
+  const W=360,H=170,L=30,B=22,T=12,ph=H-B-T,n=days.length,step=(W-L-10)/Math.max(1,n-1);
+  const ser=stats.map(x=>days.map(id=>kload(x.o.days[id],k)));
+  const mx=Math.max(1,...ser.flat()); const st=mx<=5?1:mx<=10?2:mx<=25?5:10; const top=Math.ceil(mx/st)*st;
+  const X=i=>L+i*step, Y=v=>T+ph-(v/top)*ph; let g="";
+  for(let t=0;t<=top;t+=st)g+=`<line x1="${L}" x2="${W-4}" y1="${Y(t)}" y2="${Y(t)}" stroke="var(--line)"/><text x="${L-5}" y="${Y(t)+3}" text-anchor="end">${t}</text>`;
+  days.forEach((id,i)=>{const d=parse(id);if(n<=7||d.getDate()===1||d.getDate()%5===0)g+=`<text x="${X(i)}" y="${H-6}" text-anchor="middle">${n<=7?DSHORT[dow(d)]:d.getDate()+"."}</text>`});
+  ser.forEach((sv,j)=>{const c=col(j);g+=`<polyline fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" points="${sv.map((v,i)=>X(i)+","+Y(v)).join(" ")}"/>`;
+    sv.forEach((v,i)=>{const d=stats[j].o.days[days[i]],L2=d?.[k]||[],off=d?.off?.[k];if(!v&&!L2.length&&!off)return;
+      const dd=parse(days[i]);const what=off?`volno – ${off}`:`${L2.length}× · ${fmtMin(kmin(d,k))}${L2.some(x=>x.rpe)?` · náročnost ${L2.map(x=>x.rpe||"–").join(" + ")}`:""}${L2.some(x=>x.feel)?` · pocit ${L2.map(x=>x.feel?TFEEL[x.feel].toLowerCase():"–").join(", ")}`:""}${k==="gym"&&L2.some(x=>(x.focus||[]).length)?` · ${[...new Set(L2.flatMap(x=>x.focus||[]))].join(", ")}`:""}`;
+      g+=`<g class="tipt" data-pid="${esc(stats[j].p.id)}" data-day="${days[i]}" data-tip="${esc(pname(stats[j].p.id))} · ${DSHORT[dow(dd)]} ${dd.getDate()}.${dd.getMonth()+1}. · ${esc(what)} · zátěž ${ld(Math.round(v*10)/10)}"><circle cx="${X(i)}" cy="${Y(v)}" r="10" fill="transparent"/><circle cx="${X(i)}" cy="${Y(v)}" r="${off?3:4}" fill="${off?"var(--surface)":c}" stroke="${c}" stroke-width="1.8"/></g>`})});
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;margin-top:10px" role="img" aria-label="Zátěž po dnech">${g}</svg>`;
+}
+function mealLines(stats,days,col){
+  const W=360,H=170,L=26,B=22,T=16,ph=H-B-T,n=days.length,step=(W-L-16)/Math.max(1,n-1);
+  const X=i=>L+6+i*step, Y=v=>T+ph-(v/5)*ph; let g="";
+  for(let t=0;t<=5;t++)g+=`<line x1="${L}" x2="${W-4}" y1="${Y(t)}" y2="${Y(t)}" stroke="var(--line)"/><text x="${L-5}" y="${Y(t)+3}" text-anchor="end">${t}</text>`;
+  days.forEach((id,i)=>{const d=parse(id);if(n<=7||d.getDate()===1||d.getDate()%5===0)g+=`<text x="${X(i)}" y="${H-6}" text-anchor="middle">${n<=7?DSHORT[dow(d)]:d.getDate()+"."}</text>`});
+  stats.forEach((x,j)=>{const c=col(j);const pts=days.map(id=>{const d=x.o.days[id];return hasData(d)?mealsCount(d):null});
+    for(let i=1;i<n;i++)if(pts[i]!=null&&pts[i-1]!=null)g+=`<line x1="${X(i-1)}" y1="${Y(pts[i-1])}" x2="${X(i)}" y2="${Y(pts[i])}" stroke="${c}" stroke-width="2.2" stroke-linecap="round"/>`;
+    pts.forEach((v,i)=>{if(v==null)return;const d=x.o.days[days[i]],dd=parse(days[i]);const miss=MEALS.filter(([k])=>!ate(d.meals?.[k])).map(m=>m[1].toLowerCase());
+      g+=`<g class="tipt" data-focus="food" data-pid="${esc(x.p.id)}" data-day="${days[i]}" data-tip="${esc(pname(x.p.id))} · ${DSHORT[dow(dd)]} ${dd.getDate()}.${dd.getMonth()+1}. · ${v}/5 jídel${miss.length?" · chybí: "+miss.join(", "):" · všechna jídla"}"><circle cx="${X(i)}" cy="${Y(v)}" r="10" fill="transparent"/><circle cx="${X(i)}" cy="${Y(v)}" r="9" fill="${c}" stroke="var(--surface)" stroke-width="2"/><text x="${X(i)}" y="${Y(v)+4}" text-anchor="middle" style="font-weight:700;font-size:11px;fill:#fff">${v}</text></g>`})});
+  return `<h3 class="sec" style="margin:4px 0 0">Skóre jídel den po dni</h3><svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;margin:6px 0 14px" role="img" aria-label="Počet zapsaných jídel po dnech">${g}</svg>`;
+}
+function coachCharts(stats,period,days){
+  if(!stats.length)return "";
+  const col=i=>PCOL[i%PCOL.length];
+  const legend=`<div class="legend" style="flex-wrap:wrap">${stats.map((x,i)=>`<span><i class="dot" style="background:${col(i)}"></i>${esc(pname(x.p.id))}</span>`).join("")}</div>`;
+  // A: load per week, last 8 weeks
+  const m0=monday(today()), wk=[...Array(8)].map((_,i)=>addDays(m0,(i-7)*7));
+  const full=stats.map(x=>wk.map(w=>weekStats(x.o,w))); const series=full.map(r=>r.map(a=>a.load));
+  const mx=Math.max(1,...series.flat()); const step=mx<=10?2:mx<=50?10:mx<=100?20:mx<=200?50:100; const top=Math.ceil(mx/step)*step;
+  const W=360,H=180,L=34,B=22,T=14,ph=H-B-T,bw=(W-L-10)/7; const X=i=>L+i*bw, Y=v=>T+ph-(v/top)*ph;
+  let g="";for(let t=0;t<=top;t+=step)g+=`<line x1="${L}" x2="${W-4}" y1="${Y(t)}" y2="${Y(t)}" stroke="var(--line)"/><text x="${L-6}" y="${Y(t)+3}" text-anchor="end">${t}</text>`;
+  wk.forEach((w,i)=>g+=`<text x="${X(i)}" y="${H-6}" text-anchor="middle">${isoWeek(w)}.</text>`);
+  series.forEach((sv,j)=>{const c=col(j);g+=`<polyline fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="${sv.map((v,i)=>X(i)+","+Y(v)).join(" ")}"/>`;sv.forEach((v,i)=>{if(v)g+=`<g class="tipt" data-pid="${esc(stats[j].p.id)}" data-week="${key(wk[i])}" data-tip="${esc(pname(stats[j].p.id))} · ${isoWeek(wk[i])}. týden: zátěž ${ld(Math.round(v*10)/10)} · písek ${nx(full[j][i].sandN,full[j][i].sandMin)} · posilovna ${nx(full[j][i].gymN,full[j][i].gymMin)}${full[j][i].rpe?" · ø náročnost "+dec(full[j][i].rpe):""}"><circle cx="${X(i)}" cy="${Y(v)}" r="11" fill="transparent"/><circle cx="${X(i)}" cy="${Y(v)}" r="4" fill="${c}" stroke="var(--surface)" stroke-width="1.5"/></g>`})});
+  const A=`<section class="blk c-gym"><h2>${I("pulse","gym")}Zátěž po týdnech</h2>${legend}<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block" role="img" aria-label="Tréninková zátěž hráček po týdnech">${g}</svg><p class="note">Posledních 8 týdnů, zátěž = hodiny × náročnost.</p></section>`;
+  // B: horizontal bars
+  const hbar=(title,ic,cls,valFn,max,fmt,mark,colorFn,statusFn,ticks,note)=>{
+    const vals=stats.map(x=>valFn(x.a)||0);
+    return `<section class="blk c-${cls}"><h2>${I(ic,cls)}${title}<span class="tot">${esc(period)}</span></h2>
+    <div class="hbars">${stats.map((x,i)=>{const v=vals[i],c=v?colorFn(v,i):"var(--line)",st=v&&statusFn?statusFn(v):"";
+      return `<div class="hb"><div class="top"><span class="n">${esc(pname(x.p.id))}</span><span class="v" style="color:${v?c:"var(--muted)"}">${v?fmt(v):"–"}${st?`<small style="background:color-mix(in srgb,${c} 16%,transparent)">${st}</small>`:""}</span></div>
+        <div class="tr">${v?`<span class="fl" style="width:${Math.max(2,Math.min(100,v/max*100))}%;background:${c}"></span>`:""}${mark?`<span class="mk" style="left:${mark/max*100}%"></span>`:""}</div></div>`}).join("")}</div>
+    <div class="axis">${ticks.map(t=>`<span style="left:${t[0]/max*100}%">${t[1]}</span>`).join("")}</div>
+    ${note?`<p class="note">${note}</p>`:""}</section>`};
+  const fcol=(v,inv)=>{const r=Math.round(inv?6-v:v);return r<=2?"var(--bad)":r===3?"var(--warn)":"var(--good)"};
+  const scol=v=>v<7?"var(--bad)":v<8?"var(--warn)":"var(--good)";
+  const lmax=Math.max(1,...stats.map(x=>x.a.load)); const lstep=lmax<=10?2:lmax<=50?10:lmax<=100?20:lmax<=200?50:100; const ltop=Math.ceil(lmax/lstep)*lstep;
+  const t15=[[1,"1"],[2,"2"],[3,"3"],[4,"4"],[5,"5"]];
+  const Bm=hbar("Pravidelnost jídla","bowl","food",a=>a.days?a.meals/(a.days*5)*100:0,100,v=>Math.round(v)+" %",0,v=>v<60?"var(--bad)":v<85?"var(--warn)":"var(--good)",v=>v<60?"vynechává":v<85?"občas vynechá":"pravidelně",[[0,"0 %"],[50,"50 %"],[100,"100 %"]],"Kolik z pěti jídel denně měla ve dnech, kdy vyplnila deník. Která jídla vynechala, najdeš níž v Zápisech.");
+  const Bm2=Bm.replace('<div class="hbars">',legend+mealLines(stats,days,col)+'<h3 class="sec" style="margin:0 0 4px">Za období</h3><div class="hbars">');
+  const Bs=hbar("Průměrný spánek","moon","sleep",a=>a.sl,10,v=>fmtH(v),8,v=>scol(v),v=>v<7?"málo":v<8?"těsně":"dobře",[[0,"0 h"],[4,"4 h"],[6,"6 h"],[8,"8 h"],[10,"10 h"]],"Svislá čára je cíl 8 hodin. Červená pod 7 h, žlutá 7–8 h, zelená 8 h a víc.");
+  const Bf=hbar("Večerní únava","smile","feel",a=>a.e,5,v=>dec(v),0,v=>fcol(v,1),v=>FATIG[Math.round(v)],t15,"1 vůbec · 5 úplně vyčerpaná");
+  const Br=hbar("Ranní připravenost","smile","feel",a=>a.m,5,v=>dec(v),0,v=>fcol(v),v=>FEEL[Math.round(v)],t15,"1 vůbec · 5 naplno");
+  const Bt=hbar("Stres mimo sport","smile","feel",a=>a.st,5,v=>dec(v),0,v=>fcol(v,1),v=>STRESS[Math.round(v)],t15,"1 žádný · 5 obrovský");
+  const split=(k,title,ic,cls)=>{const vals=stats.map(x=>days.reduce((t,id)=>t+kload(x.o.days[id],k),0));const mx2=Math.max(1,...vals);const st2=mx2<=10?2:mx2<=50?10:mx2<=100?20:50;const tp=Math.ceil(mx2/st2)*st2;
+    const tm=stats.map(x=>days.reduce((t,id)=>t+kmin(x.o.days[id],k),0)), cnt=stats.map(x=>days.reduce((t,id)=>t+(x.o.days[id]?.[k]||[]).length,0));
+    return `<section class="blk c-${cls}"><h2>${I(ic,cls)}${title}<span class="tot">${esc(period)}</span></h2>${legend}
+    <div class="hbars">${stats.map((x,i)=>{const v=vals[i];return `<div class="hb"><div class="top"><span class="n">${esc(pname(x.p.id))}</span><span class="v" style="color:${v?col(i):"var(--muted)"}">${v?ld(Math.round(v*10)/10):"–"}<small style="background:color-mix(in srgb,${col(i)} 14%,transparent)">${cnt[i]}× · ${fmtMin(tm[i])}</small></span></div><div class="tr">${v?`<span class="fl" style="width:${Math.max(2,v/tp*100)}%;background:${col(i)}"></span>`:""}</div></div>`}).join("")}</div>
+    <h3 class="sec" style="margin:16px 0 0">Den po dni</h3>${dayLines(stats,days,k,col)}
+    <p class="note">Najeď nebo klepni na bod pro detail, kliknutím (na mobilu druhým klepnutím) otevřeš den hráčky. Prázdný kroužek = volno.</p></section>`};
+  const Bsand=split("sand","Zátěž – trénink na písku","ball","sand"), Bgym=split("gym","Zátěž – posilovna","dumb","gym");
+  const Bl=hbar("Tréninková zátěž","pulse","gym",a=>a.load,ltop,v=>ld(Math.round(v*10)/10),0,(v,i)=>col(i),null,[...Array(Math.round(ltop/lstep)+1)].map((_,k)=>[k*lstep,String(k*lstep)]),"Hodiny tréninku × náročnost.");
+  return `<h3 class="sec">Grafy</h3>${A}${Bsand}${Bgym}${Bs}${Bm2}${Br}${Bf}${Bt}`;
+}
+
+/* ---------- export ---------- */
+let dl=null;
+function csv(rows){const q=v=>{v=v==null?"":String(v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};return "\ufeff"+rows.map(r=>r.map(q).join(";")).join("\r\n")}
+function csvHead(){return ["Hráčka","Datum","Den","Spánek (h)","Kvalita spánku 1–5","Připravenost 1–5","Únava 1–5","Stres 1–5","Trénink na písku","Písek tréninků","Písek minut","Písek náročnost","Písek pocit 1–5","Posilovna","Posilovna tréninků","Posilovna minut","Posilovna náročnost","Posilovna pocit 1–5","Posilovna zaměření",...MEALS.map(m=>m[1]),"Poznámka","Ukázka"]}
+const cz=v=>v?String(v).replace(".",","):"";
+function daysCsv(D,who,raw){D=D||docs;
+  const head=csvHead();
+  const rows=Object.keys(D).sort().map(id=>{const d=D[id];const st=k=>d.off?.[k]?"Volno – "+d.off[k]:(d[k]||[]).length?"Trénink":"";
+    return [who||pname(selPid),id,DAYS[dow(parse(id))],cz(d.sleep),d.sleepQ||"",d.morning||"",d.fatigue||"",d.stress||"",
+      st("sand"),(d.sand||[]).length||"",sumMin(d.sand)||"",(d.sand||[]).map(x=>x.rpe||"").filter(Boolean).join(" + "),(d.sand||[]).map(x=>x.feel||"").filter(Boolean).join(" + "),
+      st("gym"),(d.gym||[]).length||"",sumMin(d.gym)||"",(d.gym||[]).map(x=>x.rpe||"").filter(Boolean).join(" + "),(d.gym||[]).map(x=>x.feel||"").filter(Boolean).join(" + "),[...new Set((d.gym||[]).flatMap(x=>x.focus||[]))].join(", "),
+      ...MEALS.map(([k])=>{const st=mealState(d,k);return st===true?"ano":st===false?"ne":""}),d.note||"",d.sample?"ano":""]});
+  return raw?rows:csv([head,...rows]);
+}
+function weeksCsv(){
+  const head=["Hráčka","Týden od","Číslo týdne","Hodnocení 1–5","Regenerace",...REVIEW.map(r=>r[1]),"Ukázka"];
+  const rows=Object.keys(weeks).sort().map(id=>{const w=weeks[id];return [pname(selPid),id,isoWeek(parse(id)),w.rating||"",(w.recov||[]).join(", "),...REVIEW.map(([k])=>w[k]||""),w.sample?"ano":""]});
+  return csv([head,...rows]);
+}
+function wireExport(){
+  const blk=$("#exportBlk"); if(!blk||!dl)return; blk.hidden=false;
+  const go=async(btn,name,data)=>{btn.disabled=true;$("#expMsg").textContent="";
+    try{await dl.save({filename:name,data});$("#expMsg").textContent="Soubor je stažený."}
+    catch(e){$("#expMsg").textContent=e&&e.code==="declined"?"Stažení bylo zrušeno.":"Stažení se nepovedlo, zkuste to znovu."}
+    btn.disabled=false};
+  const t=key(today());
+  $("#expDays").onclick=e=>go(e.currentTarget,"denik-"+slug(pname(selPid))+"-dny-"+t+".csv",daysCsv());
+  const slug=x=>String(x).normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^A-Za-z0-9]+/g,"-").replace(/^-|-$/g,"").toLowerCase()||"hracka";
+  $("#expAll").onclick=async e=>{const btn=e.currentTarget;btn.disabled=true;$("#expMsg").textContent="Načítám data všech hráček…";
+    let rows=[];for(const p of players){try{const o=await fetchAll(p.id);rows=rows.concat(daysCsv(o.days,pname(p.id),true))}catch(x){}}
+    btn.disabled=false;go(btn,"denik-vsechny-hracky-"+t+".csv",csv([csvHead(),...rows]))};
+  $("#expWeeks").onclick=e=>go(e.currentTarget,"denik-"+slug(pname(selPid))+"-tydny-"+t+".csv",weeksCsv());
+}
+dl={save:async({filename,data})=>{const b=new Blob([data],{type:"text/csv;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}};
+
+/* ---------- chart tooltips ---------- */
+{const tip=$("#tip");let pinned=null,ptype="mouse";
+ const go=el=>{tip.hidden=true;pinned=null;if(el.dataset.day){if(el.dataset.pid&&el.dataset.pid!==selPid){$("#psel").value=el.dataset.pid;selectPlayer(el.dataset.pid)}state.cur=el.dataset.day;const f=el.dataset.focus;if(location.hash==="#den")render("den",true);else location.hash="#den";
+   setTimeout(()=>{const t=(f&&document.querySelector("#dayform .c-"+f))||document.querySelector("#view .datebar");if(t){t.scrollIntoView({block:"start"});if(f){t.classList.add("flash");setTimeout(()=>t.classList.remove("flash"),1600)}}},120)}else if(el.dataset.week){state.weekStart=el.dataset.week;if(el.dataset.pid&&el.dataset.pid!==selPid){$("#psel").value=el.dataset.pid;selectPlayer(el.dataset.pid)}location.hash="#tyden"}};
+ document.addEventListener("pointerdown",e=>{ptype=e.pointerType||"mouse"},true);
+ const show=(el,x,y)=>{tip.textContent=el.dataset.tip+(el.dataset.day||el.dataset.week?(ptype==="mouse"?" · klikni pro detail":" · klepni znovu pro detail"):"");tip.hidden=false;const w=tip.offsetWidth/2+8;tip.style.left=Math.min(innerWidth-w,Math.max(w,x))+"px";tip.style.top=Math.max(40,y)+"px"};
+ const at=el=>{const r=el.getBoundingClientRect();return [r.left+r.width/2,r.top]};
+ document.addEventListener("pointerover",e=>{const el=e.target.closest(".tipt");if(el&&e.pointerType==="mouse"){const [x,y]=at(el);show(el,x,y)}});
+ document.addEventListener("pointerout",e=>{const el=e.target.closest(".tipt");if(el&&e.pointerType==="mouse"&&!pinned)tip.hidden=true});
+ document.addEventListener("click",e=>{const el=e.target.closest(".tipt");
+   if(el){if((el.dataset.day||el.dataset.week)&&(ptype==="mouse"||pinned===el)){go(el);return}pinned=el;const [x,y]=at(el);show(el,x,y)}else{pinned=null;tip.hidden=true}});
+ addEventListener("scroll",()=>{pinned=null;tip.hidden=true},{passive:true});}
+
+/* ---------- responsive tables ---------- */
+function catOf(h){h=h.toLowerCase();return /spánek/.test(h)?"sleep":/písk/.test(h)?"sand":/posilovna|zátěž/.test(h)?"gym":/volno/.test(h)?"rec":/ráno|večer|stres|hodnocení/.test(h)?"feel":/jídla/.test(h)?"food":"ac"}
+function labelTables(root){(root||document).querySelectorAll(".tbl table").forEach(t=>{const hs=[...t.querySelectorAll("thead th")].map(h=>h.textContent.trim());
+  t.querySelectorAll("tbody tr,tfoot tr").forEach(tr=>{let i=0;[...tr.children].forEach(td=>{const span=Number(td.getAttribute("colspan")||1);if(!td.dataset.label){td.dataset.label=hs[i]||"";td.dataset.cat=catOf(hs[i]||"")}if(td.textContent.trim()==="–")td.classList.add("nil");i+=span})})})}
+new MutationObserver(()=>labelTables($("#view"))).observe($("#view"),{childList:true,subtree:true});
+
+/* ---------- boot ---------- */
+{const t=today();$("#heroSub").textContent=`${DAYS[dow(t)]} ${t.getDate()}. ${MONTHS_G[t.getMonth()]} · ${isoWeek(t)}. týden`}
+window.addEventListener("hashchange",route);
+route();
+
+function useLocal(){
+  mode="local";
+  try{const o=JSON.parse(localStorage.getItem("beach-denik")||"{}");if(o.days){docs=o.days;weeks=o.weeks||{}}else docs=o}catch(e){docs={}}
+  const persist=()=>{try{localStorage.setItem("beach-denik",JSON.stringify({days:docs,weeks}))}catch(e){}};
+  const M=c=>c==="days"?docs:weeks;
+  store={save:async(c,id,b)=>{M(c)[id]=b;persist()},remove:async(c,id)=>{delete M(c)[id];persist()}};
+  setStatus("Uloženo v prohlížeči"); render(null,true);
+}
+let DB=null, UU=null, me=null, selPid=null, base=null, players=[], names={}, unsubs=[];
+function pname(pid){return pid==="ukazka"?"Ukázková hráčka":(names[pid]||"Hráčka")}
+function selectPlayer(pid){
+  unsubs.forEach(u=>{try{u()}catch(e){}});unsubs=[];
+  for(const k in pending)clearTimeout(pending[k]);
+  for(const k in dirty)delete dirty[k];for(const k in wdirty)delete wdirty[k];
+  selPid=pid; base="players/"+pid; docs={}; weeks={};
+  let first=true;
+  unsubs.push(DB.collection(base+"/weeks").onSnapshot(snap=>{const n={};snap.docs.forEach(d=>{if(d.exists)n[d.id]=d.data()});weeks=n;render(null,false)},()=>{}));
+  unsubs.push(DB.collection(base+"/days").onSnapshot(snap=>{const n={};snap.docs.forEach(d=>{if(d.exists)n[d.id]=d.data()});docs=n;
+    if(first){first=false;setStatus(snap.empty?"Zatím žádné záznamy":"Synchronizováno")}render(null,false)},()=>setStatus("Spojení s úložištěm se přerušilo – obnov stránku.")));
+  render(null,true);
+}
+async function loadNames(){
+  const ids=players.map(p=>p.id).filter(i=>i!=="ukazka");
+  ids.forEach((id,i)=>{const p=players.find(x=>x.id===id);names[id]=(p&&p.name)||("Hráčka "+(i+1))});
+  const sel=$("#psel"); sel.innerHTML=players.map(p=>`<option value="${esc(p.id)}">${esc(pname(p.id))}</option>`).join("");
+  if(selPid)sel.value=selPid;
+}
+/* ---------- Supabase backend (standalone) ---------- */
+const CFG=window.DENIK_CONFIG||{};
+let SB=null;
+function snapOf(rows){return {empty:!rows.length,docs:rows.map(([id,d])=>({id,exists:true,data:()=>d}))}}
+function live(table,filter,run){
+  let alive=true;const go=()=>{if(alive)run()};go();
+  let ch=null;
+  try{ch=SB.channel(table+"-"+Math.random().toString(36).slice(2)).on("postgres_changes",Object.assign({event:"*",schema:"public",table},filter?{filter}:{}),go).subscribe()}catch(e){}
+  const t=setInterval(go,60000);
+  const vis=()=>{if(document.visibilityState==="visible")go()};document.addEventListener("visibilitychange",vis);
+  return ()=>{alive=false;clearInterval(t);document.removeEventListener("visibilitychange",vis);if(ch)try{SB.removeChannel(ch)}catch(e){}};
+}
+function mkDB(){
+  return {
+    collection(path){
+      if(path==="players"){
+        const get=async()=>{const {data,error}=await SB.from("players").select("id,name,since,is_coach");if(error)throw error;return snapOf(data.map(r=>[r.id,{name:r.name,since:r.since,is_coach:r.is_coach}]))};
+        return {get,onSnapshot(cb,err){return live("players",null,()=>get().then(cb).catch(e=>err&&err(e)))}};
+      }
+      const [,pid,kind]=path.split("/");
+      const get=async()=>{const {data,error}=await SB.from("entries").select("key,data").eq("owner",pid).eq("kind",kind);if(error)throw error;return snapOf(data.map(r=>[r.key,r.data]))};
+      return {
+        get,
+        onSnapshot(cb,err){return live("entries","owner=eq."+pid,()=>get().then(cb).catch(e=>err&&err(e)))},
+        doc(id){return {
+          set:async b=>{const {error}=await SB.from("entries").upsert({owner:pid,kind,key:id,data:b,updated_at:new Date().toISOString()});if(error)throw error},
+          delete:async()=>{const {error}=await SB.from("entries").delete().eq("owner",pid).eq("kind",kind).eq("key",id);if(error)throw error}
+        }}
+      };
+    },
+    doc(path){
+      const id=path.split("/")[1];
+      return {
+        get:async()=>{const {data,error}=await SB.from("players").select("id,name,since,is_coach").eq("id",id).maybeSingle();if(error)throw error;return {exists:!!data,data:()=>data}},
+        set:async b=>{const {error}=await SB.from("players").insert(Object.assign({id},b));if(error)throw error},
+        update:async b=>{const {error}=await SB.from("players").update(b).eq("id",id);if(error)throw error},
+        delete:async()=>{}
+      };
+    }
+  };
+}
+function showAuth(on){document.body.classList.toggle("locked",on);$("#auth").hidden=!on;$("#logout").hidden=on}
+function authMsg(t){$("#authMsg").textContent=t||""}
+function wireAuth(){
+  let email="";
+  $("#authForm").onsubmit=async e=>{e.preventDefault();email=$("#authEmail").value.trim();
+    if(!/^\S+@\S+\.\S+$/.test(email)){authMsg("Zadej platný e-mail, třeba jmeno@email.cz.");return}
+    $("#authSend").disabled=true;authMsg("Posílám…");
+    const {error}=await SB.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname,shouldCreateUser:true}});
+    $("#authSend").disabled=false;
+    if(error){authMsg(/rate|seconds/i.test(error.message)?"E-mail jsme posílali před chvílí. Zkus to znovu za minutu.":"E-mail se nepodařilo poslat. Zkontroluj adresu a zkus to znovu.");return}
+    authMsg("");$("#authForm").hidden=true;$("#codeForm").hidden=false;
+    $("#codeInfo").textContent=`Poslali jsme e-mail na ${email}. Klepni na odkaz v e-mailu, nebo sem opiš kód.`;$("#authCode").focus()};
+  $("#codeForm").onsubmit=async e=>{e.preventDefault();const token=$("#authCode").value.replace(/\s/g,"");
+    if(!/^\d{6,10}$/.test(token)){authMsg("Kód má šest číslic. Najdeš ho v e-mailu.");return}
+    $("#codeSend").disabled=true;authMsg("Ověřuju…");
+    const {error}=await SB.auth.verifyOtp({email,token,type:"email"});
+    $("#codeSend").disabled=false;
+    if(error){authMsg("Kód nesedí nebo vypršel. Zkontroluj ho, případně si nech poslat nový.");return}
+    authMsg("")};
+  $("#codeBack").onclick=()=>{$("#codeForm").hidden=true;$("#authForm").hidden=false;authMsg("")};
+  $("#logout").onclick=async()=>{await SB.auth.signOut();location.replace(location.pathname)};
+}
+async function askName(){
+  return new Promise(res=>{
+    $("#nameBox").hidden=false;
+    $("#nameForm").onsubmit=async e=>{e.preventDefault();const n=$("#nameIn").value.trim();
+      if(n.length<2){$("#nameMsg").textContent="Napiš své jméno.";return}
+      try{await DB.doc("players/"+me).update({name:n});$("#nameBox").hidden=true;res(n)}
+      catch(x){$("#nameMsg").textContent="Jméno se nepodařilo uložit. Zkus to znovu."}};
+  });
+}
+let booted=false;
+async function bootFor(session){
+  if(booted)return; booted=true;
+  me=session.user.id; showAuth(false); $("#nameBox").hidden=true;
+  if(location.search)history.replaceState(null,"",location.pathname+location.hash);
+  mode="db";
+  store={save:(c,id,b)=>DB.collection(base+"/"+c).doc(id).set(b),remove:(c,id)=>DB.collection(base+"/"+c).doc(id).delete()};
+  let row=null;
+  try{const r=DB.doc("players/"+me);let sn=await r.get();if(!sn.exists){await r.set({since:key(today())});sn=await r.get()}row=sn.data()}catch(e){setStatus("Nepodařilo se načíst účet. Obnov stránku.");return}
+  isCoach=!!(row&&row.is_coach);
+  $("#tab-trener").hidden=!isCoach;
+  if(isCoach){
+    $("#coachbar").hidden=false;
+    $("#psel").onchange=e=>selectPlayer(e.target.value);
+    DB.collection("players").onSnapshot(async snap=>{
+      players=snap.docs.filter(d=>d.exists&&!d.data().is_coach).map(d=>({id:d.id,...d.data()})).sort((x,y)=>String(x.since||"").localeCompare(String(y.since||"")));
+      await loadNames();
+      if(selPid&&!players.some(p=>p.id===selPid))selPid=null;
+      if(!selPid&&players.length)selectPlayer(players[0].id);
+      if(!players.length){setStatus("Zatím žádná hráčka");render(null,true)}
+      if(currentView==="trener")renderTeam();
+    },()=>{});
+    route();
+  }else{
+    if(!row||!row.name){document.body.classList.add("locked");await askName();document.body.classList.remove("locked")}
+    selectPlayer(me);
+  }
+}
+(async()=>{
+  if(!CFG.supabaseUrl||!CFG.supabaseAnonKey||!window.supabase){
+    showAuth(false);$("#logout").hidden=true;document.body.classList.add("locked");
+    setStatus("Aplikace ještě není propojená s databází. Doplň config.js podle návodu v README.");return}
+  SB=window.supabase.createClient(CFG.supabaseUrl,CFG.supabaseAnonKey,{auth:{flowType:"pkce",detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}});
+  DB=mkDB(); wireAuth();
+  SB.auth.onAuthStateChange((ev,session)=>{if(session)bootFor(session)});
+  const {data}=await SB.auth.getSession();
+  if(data.session)bootFor(data.session);
+  else{showAuth(true);setStatus("Nepřihlášeno")}
+})();
+
+})();
+</script>
+</body>
+</html>
