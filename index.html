@@ -1143,7 +1143,7 @@ let booted=false;
 async function bootFor(session){
   if(booted)return; booted=true;
   me=session.user.id; showAuth(false); $("#nameBox").hidden=true;
-  if(location.search)history.replaceState(null,"",location.pathname+location.hash);
+  if(location.search||/access_token|error|type=/.test(location.hash))history.replaceState(null,"",location.pathname);
   mode="db";
   store={save:(c,id,b)=>DB.collection(base+"/"+c).doc(id).set(b),remove:(c,id)=>DB.collection(base+"/"+c).doc(id).delete()};
   let row=null;
@@ -1171,12 +1171,15 @@ async function bootFor(session){
   if(!CFG.supabaseUrl||!CFG.supabaseAnonKey||!window.supabase){
     showAuth(false);$("#logout").hidden=true;document.body.classList.add("locked");
     setStatus("Aplikace ještě není propojená s databází. Doplň config.js podle návodu v README.");return}
-  SB=window.supabase.createClient(CFG.supabaseUrl,CFG.supabaseAnonKey,{auth:{flowType:"pkce",detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}});
+  SB=window.supabase.createClient(CFG.supabaseUrl,CFG.supabaseAnonKey,{auth:{flowType:"implicit",detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}});
   DB=mkDB(); wireAuth();
   SB.auth.onAuthStateChange((ev,session)=>{if(session)bootFor(session)});
   const {data}=await SB.auth.getSession();
   if(data.session)bootFor(data.session);
-  else{showAuth(true);setStatus("Nepřihlášeno")}
+  else{showAuth(true);setStatus("Nepřihlášeno");
+    const u=new URLSearchParams(location.search+"&"+location.hash.replace(/^#/,""));
+    const err=u.get("error_code")||u.get("error");
+    if(err){authMsg(/expired|otp/i.test(err+u.get("error_description"))?"Odkaz v e-mailu už vypršel nebo byl použitý. Nech si poslat nový.":"Přihlášení přes odkaz se nepovedlo ("+(u.get("error_description")||err).replace(/\+/g," ")+"). Nech si poslat nový e-mail.");history.replaceState(null,"",location.pathname)}}
 })();
 
 })();
