@@ -471,7 +471,7 @@ const RPEL=["","Velmi lehké","Lehké","Lehké","Střední","Střední","Nároč
 const OFFR=["Plánované volno","Regenerace","Nemoc","Zranění","Škola / práce","Jiné"];
 const PLANK=[["sand","Písek","tréninků"],["gym","Posilovna","tréninků"],["rest","Volno a regenerace","dní"]];
 const dny=n=>n===1?"den":n<5?"dny":"dní";
-const TFEEL=["","Hrozně","Slabě","Ujde to","Dobře","Skvěle"];
+const TFEEL=["","Hrozně","Špatně","Průměrně","Dobře","Skvěle"];
 const RATE=["","Špatný","Slabší","Průměrný","Dobrý","Skvělý"];
 const REVIEW=[["good","Co se povedlo","Tréninky, zápasy, pokroky…"],["improve","Na čem zapracovat","Technika, hlava, regenerace…"],["body","Tělo a zdraví","Bolesti, únava, drobná zranění…"],["goal","Cíl na další týden","Jedna až dvě konkrétní věci"]];
 const MEALS=[["snidane","Snídaně"],["svacina1","Dopolední svačina"],["obed","Oběd"],["svacina2","Odpolední svačina"],["vecere","Večeře"]];
@@ -626,7 +626,7 @@ function renderDay(force){
         <span class="t">Náročnost 1–10</span>
         <div class="rpe" role="group" aria-label="Náročnost tréninku">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button type="button" data-rpe="${n}" aria-pressed="${s.rpe===n}">${n}</button>`).join("")}</div>
         <div class="rpel">${s.rpe?RPEL[s.rpe]:"1 = úplně lehké, 10 = na maximum"}</div>
-        <span class="t">Pocit z tréninku</span>
+        <span class="t">Jak ti trénink šel?</span>
         <div class="feel" data-tfeel="${i}">${feelBtns(s.feel,kind+"f"+i+"-",TFEEL)}</div></div></div>`).join("")+
       `<div class="acts"><button type="button" class="add" id="${kind}-add">+ Další trénink</button></div>`;
     }
@@ -684,7 +684,7 @@ function agg(ids){
   r.m=r.mN?r.mSum/r.mN:0;r.e=r.eN?r.eSum/r.eN:0;r.sl=r.slN?r.slSum/r.slN:0;r.st=r.stN?r.stSum/r.stN:0;r.sq=r.sqN?r.sqSum/r.sqN:0;r.rpe=r.rpeN?r.rpeSum/r.rpeN:0;r.load=Math.round(r.load*10)/10;return r;
 }
 const pill=(v,inv)=>v?`<span class="pill f${inv?6-Math.round(v):Math.round(v)}">${Number.isInteger(v)?v:v.toFixed(1).replace(".",",")}</span>`:"–";
-const cell=(d,k)=>{if(d.off?.[k])return `<span class="offtag">${esc(d.off[k])}</span>`;let h=nx((d[k]||[]).length,sumMin(d[k]));const rp=(d[k]||[]).filter(x=>x.rpe).map(x=>x.rpe);if(rp.length)h+=`<div class="gtags">náročnost ${rp.join(" + ")}</div>`;const tf=(d[k]||[]).filter(x=>x.feel).map(x=>TFEEL[x.feel].toLowerCase());if(tf.length)h+=`<div class="gtags">pocit ${tf.join(", ")}</div>`;if(k==="gym"){const f=[...new Set((d.gym||[]).flatMap(x=>x.focus||[]))];if(f.length)h+=`<div class="gtags">${esc(f.join(", "))}</div>`}return h};
+const cell=(d,k)=>{if(d.off?.[k])return `<span class="offtag">${esc(d.off[k])}</span>`;let h=nx((d[k]||[]).length,sumMin(d[k]));const rp=(d[k]||[]).filter(x=>x.rpe).map(x=>x.rpe);if(rp.length)h+=`<div class="gtags">náročnost ${rp.join(" + ")}</div>`;const tf=(d[k]||[]).filter(x=>x.feel).map(x=>TFEEL[x.feel].toLowerCase());if(tf.length)h+=`<div class="gtags">šlo to ${tf.join(", ")}</div>`;if(k==="gym"){const f=[...new Set((d.gym||[]).flatMap(x=>x.focus||[]))];if(f.length)h+=`<div class="gtags">${esc(f.join(", "))}</div>`}return h};
 const ld=v=>v?String(v).replace(".",","):"–";
 const dec=v=>v.toFixed(1).replace(".",",");
 const nx=(n,m)=>n?`${n}× · ${fmtMin(m)}`:"–";
@@ -866,7 +866,7 @@ function renderLog(){
   const n=new Date(y,m,0).getDate(); const ids=[...Array(n)].map((_,i)=>key(new Date(y,m-1,n-i)));
   const fmtD=id=>{const d=parse(id);return DSHORT[dow(d)]+" "+d.getDate()+"."+(d.getMonth()+1)+"."};
   const tr=(d,k)=>{if(d.off?.[k])return `<span class="offtag">Volno – ${esc(d.off[k])}</span>`;const L=d[k]||[];if(!L.length)return "–";
-    return L.map(x=>`${fmtMin(x.min)}${x.rpe?` · náročnost ${x.rpe}`:""}${x.feel?` · pocit ${pill(x.feel)} ${TFEEL[x.feel].toLowerCase()}`:""}${(x.focus||[]).length?` · ${esc(x.focus.join(", "))}`:""}`).join("<br>")};
+    return L.map(x=>`${fmtMin(x.min)}${x.rpe?` · náročnost ${x.rpe}`:""}${x.feel?` · šlo to ${pill(x.feel)} ${TFEEL[x.feel].toLowerCase()}`:""}${(x.focus||[]).length?` · ${esc(x.focus.join(", "))}`:""}`).join("<br>")};
   let h="";
   for(const id of ids){
     const d=parse(id);
@@ -923,7 +923,7 @@ function dayLines(stats,days,k,col){
   days.forEach((id,i)=>{const d=parse(id);if(n<=7||d.getDate()===1||d.getDate()%5===0)g+=`<text x="${X(i)}" y="${H-6}" text-anchor="middle">${n<=7?DSHORT[dow(d)]:d.getDate()+"."}</text>`});
   ser.forEach((sv,j)=>{const c=col(j);g+=`<polyline fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" points="${sv.map((v,i)=>X(i)+","+Y(v)).join(" ")}"/>`;
     sv.forEach((v,i)=>{const d=stats[j].o.days[days[i]],L2=d?.[k]||[],off=d?.off?.[k];if(!v&&!L2.length&&!off)return;
-      const dd=parse(days[i]);const what=off?`volno – ${off}`:`${L2.length}× · ${fmtMin(kmin(d,k))}${L2.some(x=>x.rpe)?` · náročnost ${L2.map(x=>x.rpe||"–").join(" + ")}`:""}${L2.some(x=>x.feel)?` · pocit ${L2.map(x=>x.feel?TFEEL[x.feel].toLowerCase():"–").join(", ")}`:""}${k==="gym"&&L2.some(x=>(x.focus||[]).length)?` · ${[...new Set(L2.flatMap(x=>x.focus||[]))].join(", ")}`:""}`;
+      const dd=parse(days[i]);const what=off?`volno – ${off}`:`${L2.length}× · ${fmtMin(kmin(d,k))}${L2.some(x=>x.rpe)?` · náročnost ${L2.map(x=>x.rpe||"–").join(" + ")}`:""}${L2.some(x=>x.feel)?` · šlo to ${L2.map(x=>x.feel?TFEEL[x.feel].toLowerCase():"–").join(", ")}`:""}${k==="gym"&&L2.some(x=>(x.focus||[]).length)?` · ${[...new Set(L2.flatMap(x=>x.focus||[]))].join(", ")}`:""}`;
       g+=`<g class="tipt" data-pid="${esc(stats[j].p.id)}" data-day="${days[i]}" data-tip="${esc(pname(stats[j].p.id))} · ${DSHORT[dow(dd)]} ${dd.getDate()}.${dd.getMonth()+1}. · ${esc(what)} · zátěž ${ld(Math.round(v*10)/10)}"><circle cx="${X(i)}" cy="${Y(v)}" r="10" fill="transparent"/><circle cx="${X(i)}" cy="${Y(v)}" r="${off?3:4}" fill="${off?"var(--surface)":c}" stroke="${c}" stroke-width="1.8"/></g>`})});
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;margin-top:10px" role="img" aria-label="Zátěž po dnech">${g}</svg>`;
 }
@@ -984,7 +984,7 @@ function coachCharts(stats,period,days){
 /* ---------- export ---------- */
 let dl=null;
 function csv(rows){const q=v=>{v=v==null?"":String(v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};return "\ufeff"+rows.map(r=>r.map(q).join(";")).join("\r\n")}
-function csvHead(){return ["Hráčka","Datum","Den","Spánek (h)","Kvalita spánku 1–5","Připravenost 1–5","Únava 1–5","Stres 1–5","Trénink na písku","Písek tréninků","Písek minut","Písek náročnost","Písek pocit 1–5","Posilovna","Posilovna tréninků","Posilovna minut","Posilovna náročnost","Posilovna pocit 1–5","Posilovna zaměření",...MEALS.map(m=>m[1]),"Poznámka","Ukázka"]}
+function csvHead(){return ["Hráčka","Datum","Den","Spánek (h)","Kvalita spánku 1–5","Připravenost 1–5","Únava 1–5","Stres 1–5","Trénink na písku","Písek tréninků","Písek minut","Písek náročnost","Písek jak šel 1–5","Posilovna","Posilovna tréninků","Posilovna minut","Posilovna náročnost","Posilovna jak šla 1–5","Posilovna zaměření",...MEALS.map(m=>m[1]),"Poznámka","Ukázka"]}
 const cz=v=>v?String(v).replace(".",","):"";
 function daysCsv(D,who,raw){D=D||docs;
   const head=csvHead();
