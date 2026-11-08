@@ -74,3 +74,8 @@ Na ploše telefonu: **iPhone** Safari → Sdílet → *Přidat na plochu*, **And
 
 ## Ochrana údajů
 Deník obsahuje údaje o spánku, únavě a zdraví hráček. Informuj o tom hráčky, a u nezletilých i rodiče, a ukládej data v EU. Hráčku i všechna její data smažeš v Supabase: **Authentication → Users → Delete user**.
+
+---
+
+## Náhled k připomínkování
+`tools/build_preview.py` sestaví z `index.html` náhled s ukázkovými daty, bez napojení na databázi. Claude ho zveřejní na claude.ai, kde se dají ke konkrétním částem psát připomínky v bublinách. Skutečná aplikace soubory ve složce `tools/` nepoužívá.

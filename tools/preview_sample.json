@@ -1,0 +1,262 @@
+{
+ "days": {
+  "2026-11-04": {
+   "gym": [
+    {
+     "focus": [
+      "Prevence (ramena, kotníky)",
+      "Mobilita / protažení"
+     ],
+     "min": 45,
+     "rpe": 3
+    }
+   ],
+   "meals": {
+    "obed": {
+     "text": "Hovězí, bulgur"
+    },
+    "snidane": {
+     "text": "Müsli s mlékem"
+    },
+    "svacina1": {
+     "text": "Banán"
+    },
+    "vecere": {
+     "text": "Omeleta, zelenina"
+    }
+   },
+   "morning": 3,
+   "note": "Ukázka. Regenerační den.",
+   "off": {
+    "sand": "Regenerace"
+   },
+   "sand": [],
+   "sleep": 6.5,
+   "sleepQ": 3,
+   "stress": 4,
+   "fatigue": 2
+  },
+  "2026-11-06": {
+   "gym": [],
+   "meals": {
+    "obed": {
+     "text": "Losos, rýže"
+    },
+    "snidane": {
+     "text": "Palačinky s tvarohem"
+    },
+    "svacina2": {
+     "text": "Ovoce, jogurt"
+    },
+    "vecere": {
+     "text": "Celozrnný wrap"
+    }
+   },
+   "morning": 5,
+   "note": "Ukázka. Skvělý trénink, výborně podávala.",
+   "sand": [
+    {
+     "min": 90,
+     "rpe": 6
+    }
+   ],
+   "sleep": 8.5,
+   "sleepQ": 5,
+   "stress": 2,
+   "fatigue": 2
+  },
+  "2026-11-03": {
+   "gym": [],
+   "meals": {
+    "obed": {
+     "text": "Těstoviny s tuňákem"
+    },
+    "snidane": {
+     "text": "Vajíčka, chléb"
+    },
+    "svacina2": {
+     "text": "Tvaroh s ovocem"
+    },
+    "vecere": {
+     "text": "Krůtí, kuskus – menší porce"
+    }
+   },
+   "morning": 3,
+   "note": "Ukázka. Dvoufázový den, večer unavená.",
+   "sand": [
+    {
+     "min": 90,
+     "rpe": 7
+    },
+    {
+     "min": 60,
+     "rpe": 6
+    }
+   ],
+   "sleep": 7,
+   "sleepQ": 3,
+   "stress": 3,
+   "fatigue": 4
+  },
+  "2026-11-07": {
+   "gym": [],
+   "meals": {
+    "obed": {
+     "text": "Těstoviny – velká porce"
+    },
+    "snidane": {
+     "text": "Vajíčka, avokádo, chléb"
+    },
+    "svacina1": {
+     "text": "Tyčinka"
+    },
+    "svacina2": {
+     "text": "Banán, ořechy"
+    },
+    "vecere": {
+     "text": "Pizza"
+    }
+   },
+   "morning": 4,
+   "note": "Ukázka. Turnaj, 4 zápasy.",
+   "off": {
+    "gym": "Plánované volno"
+   },
+   "sand": [
+    {
+     "min": 120,
+     "rpe": 9
+    },
+    {
+     "min": 90,
+     "rpe": 8
+    }
+   ],
+   "sleep": 7.5,
+   "sleepQ": 3,
+   "stress": 2,
+   "fatigue": 4
+  },
+  "2026-11-08": {
+   "gym": [],
+   "meals": {
+    "obed": {
+     "text": "Svíčková"
+    },
+    "snidane": {
+     "text": "Ovesná kaše"
+    },
+    "vecere": {
+     "text": "Chléb, sýr, zelenina"
+    }
+   },
+   "morning": 3,
+   "note": "Ukázka. Volno.",
+   "off": {
+    "gym": "Plánované volno",
+    "sand": "Plánované volno"
+   },
+   "sand": [],
+   "sleep": 9,
+   "sleepQ": 5,
+   "stress": 1,
+   "fatigue": 2
+  },
+  "2026-11-02": {
+   "gym": [
+    {
+     "focus": [
+      "Nohy",
+      "Výbušnost / skoky"
+     ],
+     "min": 60,
+     "rpe": 7
+    }
+   ],
+   "meals": {
+    "obed": {
+     "text": "Kuřecí prsa, rýže, zelenina – velký talíř"
+    },
+    "snidane": {
+     "text": "Ovesná kaše s banánem, jogurt"
+    },
+    "svacina1": {
+     "text": "Jablko, hrst ořechů"
+    },
+    "svacina2": {
+     "text": "Proteinový shake"
+    },
+    "vecere": {
+     "text": "Losos, brambory, salát"
+    }
+   },
+   "morning": 4,
+   "note": "Ukázka. Po posilovně lehce stažená lýtka.",
+   "sand": [
+    {
+     "min": 90,
+     "rpe": 6
+    }
+   ],
+   "sleep": 8,
+   "sleepQ": 4,
+   "stress": 2,
+   "fatigue": 3
+  },
+  "2026-11-05": {
+   "gym": [
+    {
+     "focus": [
+      "Horní část",
+      "Core"
+     ],
+     "min": 60,
+     "rpe": 6
+    }
+   ],
+   "meals": {
+    "obed": {
+     "text": "Kuře, brambory"
+    },
+    "snidane": {
+     "text": "Ovesná kaše"
+    },
+    "svacina1": {
+     "text": "Rohlík se šunkou"
+    },
+    "svacina2": {
+     "text": "Shake"
+    },
+    "vecere": {
+     "text": "Rizoto"
+    }
+   },
+   "morning": 4,
+   "note": "Ukázka.",
+   "sand": [
+    {
+     "min": 120,
+     "rpe": 8
+    }
+   ],
+   "sleep": 8,
+   "sleepQ": 4,
+   "stress": 3,
+   "fatigue": 3
+  }
+ },
+ "weeks": {
+  "2026-11-02": {
+   "body": "Lehce stažená lýtka po pondělní posilovně, jinak v pořádku.",
+   "goal": "Spát aspoň 8 h, dva tréninky příjmu.",
+   "good": "Ukázka. Dobrý servis na turnaji, v pátek výborný trénink.",
+   "improve": "Příjem po čáře, víc pít během turnaje.",
+   "rating": 4,
+   "recov": [
+    "Protažení",
+    "Válec",
+    "Sauna"
+   ]
+  }
+ }
+}
