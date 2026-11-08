@@ -417,7 +417,7 @@ body.locked nav.tabs,body.locked #view,body.locked #banner,body.locked #coachbar
   </header>
   <section id="auth" class="auth" hidden>
     <h2>Přihlášení</h2>
-    <p class="note">Zadej svůj e-mail. Pošleme ti odkaz a šestimístný kód, heslo nepotřebuješ.</p>
+    <p class="note">Zadej svůj e-mail. Pošleme ti přihlašovací kód, heslo nepotřebuješ.</p>
     <form id="authForm" novalidate>
       <label for="authEmail">E-mail</label>
       <input id="authEmail" type="email" inputmode="email" autocomplete="email" placeholder="jmeno@email.cz" required>
@@ -1119,11 +1119,12 @@ function wireAuth(){
     $("#authSend").disabled=false;
     if(error){authMsg(/rate|seconds/i.test(error.message)?"E-mail jsme posílali před chvílí. Zkus to znovu za minutu.":"E-mail se nepodařilo poslat. Zkontroluj adresu a zkus to znovu.");return}
     authMsg("");$("#authForm").hidden=true;$("#codeForm").hidden=false;
-    $("#codeInfo").textContent=`Poslali jsme e-mail na ${email}. Klepni na odkaz v e-mailu, nebo sem opiš kód.`;$("#authCode").focus()};
+    $("#codeInfo").textContent=`Poslali jsme e-mail na ${email}. Opiš sem kód z e-mailu. Na iPhonu v aplikaci z plochy použij vždy kód, ne odkaz.`;$("#authCode").focus()};
   $("#codeForm").onsubmit=async e=>{e.preventDefault();const token=$("#authCode").value.replace(/\s/g,"");
-    if(!/^\d{6,10}$/.test(token)){authMsg("Kód má šest číslic. Najdeš ho v e-mailu.");return}
+    if(!/^\d{6,10}$/.test(token)){authMsg("Opiš celý číselný kód z e-mailu.");return}
     $("#codeSend").disabled=true;authMsg("Ověřuju…");
-    const {error}=await SB.auth.verifyOtp({email,token,type:"email"});
+    let {error}=await SB.auth.verifyOtp({email,token,type:"email"});
+    if(error){const r=await SB.auth.verifyOtp({email,token,type:"signup"});if(!r.error)error=null}
     $("#codeSend").disabled=false;
     if(error){authMsg("Kód nesedí nebo vypršel. Zkontroluj ho, případně si nech poslat nový.");return}
     authMsg("")};
