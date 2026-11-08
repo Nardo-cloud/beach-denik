@@ -17,9 +17,9 @@ Webová aplikace pro Prague Beach Team. Hráčky se přihlašují jen svým e-ma
 
 ### 1. Databáze Supabase
 1. Založ si zdarma účet na <https://supabase.com> a klikni na **New project**.
-   - Region: **Central EU (Frankfurt)**, aby data zůstala v EU.
+   - Region: kterýkoli v EU, třeba **West EU (Ireland)** nebo **Central EU (Frankfurt)**, aby data zůstala v EU.
    - Heslo k databázi si ulož, ale aplikace ho nepotřebuje.
-2. Otevři **SQL Editor → New query**, vlož celý obsah `supabase/setup.sql` a klikni na **Run**. Poslední blok (krok 6) zatím nespouštěj.
+2. Otevři **SQL Editor → New query**, vlož celý **obsah** souboru `supabase/setup.sql` (ne jeho název – otevři soubor na GitHubu a zkopíruj text) a klikni na **Run**. Poslední blok (krok 6) zatím nespouštěj.
 3. **Authentication → Emails → Templates → Magic Link**: do textu e-mailu přidej řádek s kódem, třeba:
    ```
    Tvůj přihlašovací kód: {{ .Token }}
@@ -73,4 +73,4 @@ Na ploše telefonu: **iPhone** Safari → Sdílet → *Přidat na plochu*, **And
 ---
 
 ## Ochrana údajů
-Deník obsahuje údaje o spánku, únavě a zdraví hráček. Informuj o tom hráčky, a u nezletilých i rodiče, a ukládej data v EU (region Frankfurt). Hráčku i všechna její data smažeš v Supabase: **Authentication → Users → Delete user**.
+Deník obsahuje údaje o spánku, únavě a zdraví hráček. Informuj o tom hráčky, a u nezletilých i rodiče, a ukládej data v EU. Hráčku i všechna její data smažeš v Supabase: **Authentication → Users → Delete user**.
