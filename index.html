@@ -562,6 +562,7 @@ function route(){
   render(view,true);
 }
 let currentView="den";
+const FOLD={};
 let isCoach=false;
 function render(view,force){
   currentView=view||currentView;
@@ -585,7 +586,7 @@ function renderBanner(){
 function renderDay(force){
   const id=state.cur, d=parse(id);
   const form=$("#dayform");
-  if(!force&&form&&form.dataset.id===id&&(form.contains(document.activeElement)||dirty[id]))return;
+  if(!force&&form&&form.dataset.id===id&&(form.contains(document.activeElement)||dirty[id]||form.dataset.touched))return;
   const day=JSON.parse(JSON.stringify(getDay(id)||blank()));
   const isToday=id===key(today());
   $("#view").innerHTML=`
@@ -619,13 +620,15 @@ function renderDay(force){
     <section class="blk c-ac"><h2>${I("pen","ac")}Poznámka</h2>
       <textarea id="note" rows="3" placeholder="Bolesti, spánek, nálada, co se povedlo…">${esc(day.note)}</textarea></section>
   </form>`;
-  const commit=()=>{queueSave(id,JSON.parse(JSON.stringify(day)));totals();document.querySelectorAll(".save.done").forEach(b=>{b.classList.remove("done");b.textContent="Uložit"})};
+  const commit=()=>{const fm=$("#dayform");if(fm)fm.dataset.touched="1";queueSave(id,JSON.parse(JSON.stringify(day)));totals();document.querySelectorAll(".save.done").forEach(b=>{b.classList.remove("done");b.textContent="Uložit"})};
   function totals(){
     for(const k of ["sand","gym"])$("#"+k+"Tot").textContent=day.off?.[k]?day.off[k]:day[k].length?`${day[k].length}× · ${fmtMin(sumMin(day[k]))}`:"";
     const c=mealsCount(day); $("#mealTot").textContent=c?`${c}/5 jídel`:"";
   }
   const saved0=getDay(id);
-  const folded={sand:!!(saved0&&(saved0.off?.sand||(saved0.sand||[]).length)),gym:!!(saved0&&(saved0.off?.gym||(saved0.gym||[]).length))};
+  const fold0={sand:!!(saved0&&(saved0.off?.sand||(saved0.sand||[]).length)),gym:!!(saved0&&(saved0.off?.gym||(saved0.gym||[]).length))};
+  const fkey=k=>id+"|"+k; for(const k of ["sand","gym"])if(!(fkey(k) in FOLD))FOLD[fkey(k)]=fold0[k];
+  const folded={get sand(){return FOLD[fkey("sand")]},set sand(v){FOLD[fkey("sand")]=v},get gym(){return FOLD[fkey("gym")]},set gym(v){FOLD[fkey("gym")]=v}};
   function summary(kind){
     if(day.off?.[kind])return `<span class="fs-main">Volno</span><span class="fs-sub">${esc(day.off[kind])}</span>`;
     const L=day[kind]||[];
