@@ -1163,7 +1163,7 @@ function wireAuth(){
     $("#authSend").disabled=true;authMsg("Posílám…");
     const {error}=await SB.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname,shouldCreateUser:true}});
     $("#authSend").disabled=false;
-    if(error){authMsg(/rate|seconds/i.test(error.message)?"E-mail jsme posílali před chvílí. Zkus to znovu za minutu.":"E-mail se nepodařilo poslat. Zkontroluj adresu a zkus to znovu.");return}
+    if(error){const em=String(error.message||error.code||error);authMsg((/rate|seconds/i.test(em)?"E-mail jsme posílali před chvílí. Zkus to znovu za minutu.":/signup|not allowed/i.test(em)?"Registrace nových hráček je v databázi vypnutá. Dej vědět trenérovi.":"E-mail se nepodařilo poslat. Zkontroluj adresu a zkus to znovu.")+" (Chyba: "+em+")");return}
     authMsg("");$("#authForm").hidden=true;$("#codeForm").hidden=false;
     $("#codeInfo").textContent=`Poslali jsme e-mail na ${email}. Opiš sem kód z e-mailu. Na iPhonu v aplikaci z plochy použij vždy kód, ne odkaz.`;$("#authCode").focus()};
   $("#codeForm").onsubmit=async e=>{e.preventDefault();const token=$("#authCode").value.replace(/\s/g,"");
