@@ -375,6 +375,12 @@ body.locked nav.tabs,body.locked #view,body.locked #banner,body.locked #coachbar
 .fb-msg{order:3;font-size:13px;color:var(--c);font-weight:600}
 .fb-bar{display:flex;gap:3px;margin-top:8px}
 .fb-bar span{flex:1;height:4px;background:var(--line2)} .fb-bar span.on{background:var(--c)}
+.tips{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.tips li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.45}
+.tp-dot{flex:none;width:10px;height:10px;margin-top:6px;background:var(--c,var(--muted))}
+.tp-bad{--c:var(--bad)} .tp-warn{--c:var(--warn)} .tp-good{--c:var(--good)} .tp-info{--c:var(--muted)}
+.tp-player{padding-block:8px;border-top:1px solid var(--line)} .tp-player:first-of-type{border-top:0;padding-top:0}
+.tp-player b{display:block;font-family:var(--f-display);font-weight:800;text-transform:uppercase;margin-bottom:6px}
 </style>
 </head>
 <body class="locked">
@@ -486,7 +492,7 @@ const RECOV=["Protažení","Válec","Fyzio / masáž","Sauna","Bazén / plaván�
 const RPEL=["","Velmi lehké","Lehké","Lehké","Střední","Střední","Náročné","Velmi těžké","Velmi těžké","Skoro maximum","Maximum"];
 const OFFR=["Plánované volno","Regenerace","Nemoc","Zranění","Škola / práce","Jiné"];
 const PLANK=[["sand","Písek","tréninků"],["gym","Posilovna","tréninků"],["rest","Volno a regenerace","dní"]];
-const dny=n=>n===1?"den":n<5?"dny":"dní";
+const dny=n=>n===1?"den":n>=2&&n<=4?"dny":"dní";
 const TFEEL=["","Hrozný","Špatný","Průměrný","Dobrý","Skvělý"];
 const RATE=["","Špatný","Slabší","Průměrný","Dobrý","Skvělý"];
 const REVIEW=[["good","Co se povedlo","Tréninky, zápasy, pokroky…"],["improve","Na čem zapracovat","Technika, hlava, regenerace…"],["body","Tělo a zdraví","Bolesti, únava, drobná zranění…"],["goal","Cíl na další týden","Jedna až dvě konkrétní věci"]];
@@ -721,6 +727,38 @@ const ld=v=>v?String(v).replace(".",","):"–";
 const dec=v=>v.toFixed(1).replace(".",",");
 const nx=(n,m)=>n?`${n}× · ${fmtMin(m)}`:"–";
 
+
+/* ---------- rady ---------- */
+// ids = dny období, prev = stejně dlouhé předchozí období; you=true → oslovení hráčky, jinak 3. osoba (trenér)
+function tips(ids,prev,you){
+  const a=agg(ids), p=prev&&prev.length?agg(prev):null, out=[];
+  const T=(l,t2,t3)=>out.push({l,t:you?t2:t3});
+  const need=Math.min(3,ids.length);
+  if(!a.days){T("info",`Za tohle období zatím nic zapsaného. Rady se objeví, jakmile začneš vyplňovat.`,`Za tohle období zatím nic nezapsala.`);return out}
+  if(a.days<need)T("info",`Zatím máš zapsané ${a.days} ${dny(a.days)}. Vyplňuj deník co nejčastěji, ať jsou rady přesné.`,`Zapsané má jen ${a.days} ${dny(a.days)}, rady jsou zatím orientační.`);
+  if(a.sl){if(a.sl<7)T("bad",`Spíš v průměru jen ${fmtH(a.sl)}. To je málo – zkus chodit spát dřív, cílem je aspoň 8 hodin.`,`Spí v průměru jen ${fmtH(a.sl)} – málo, cíl je aspoň 8 hodin.`);
+    else if(a.sl<8)T("warn",`Spíš v průměru ${fmtH(a.sl)}, těsně pod doporučenými 8 hodinami. Půl hodiny navíc by pomohla.`,`Spí v průměru ${fmtH(a.sl)}, těsně pod 8 hodinami.`)}
+  if(a.sq&&a.sq<=2.5)T("warn",`Spánek máš spíš nekvalitní (ø ${dec(a.sq)}/5). Pomáhá klidný večer bez mobilu a pravidelný čas usínání.`,`Kvalita spánku je nízká (ø ${dec(a.sq)}/5).`);
+  if(a.m&&a.m<=2.5)T("bad",`Ráno se cítíš málo připravená (ø ${dec(a.m)}/5). Tělo si říká o odpočinek – zvaž lehčí den.`,`Ráno se cítí málo připravená (ø ${dec(a.m)}/5).`);
+  if(a.e&&a.e>=4)T("bad",`Večer jsi velmi unavená (ø ${dec(a.e)}/5). Je čas trochu ubrat a víc regenerovat.`,`Večer je velmi unavená (ø ${dec(a.e)}/5) – zvážit ubrání zátěže.`);
+  else if(a.e&&a.e>=3.5)T("warn",`Únava se večer drží vysoko (ø ${dec(a.e)}/5). Hlídej spánek a regeneraci.`,`Večerní únava je zvýšená (ø ${dec(a.e)}/5).`);
+  if(a.st&&a.st>=4)T("bad",`Tvůj stres mimo sport je hodně vysoký (ø ${dec(a.st)}/5). Najdi si čas na odpočinek a klidně si o tom promluv s trenérem.`,`Stres mimo sport je vysoký (ø ${dec(a.st)}/5) – stojí za rozhovor.`);
+  else if(a.st&&a.st>=3.5)T("warn",`Stres mimo sport je zvýšený (ø ${dec(a.st)}/5). Pozor, ať se nesčítá s tréninkovou únavou.`,`Stres mimo sport je zvýšený (ø ${dec(a.st)}/5).`);
+  if(p&&p.load>0&&a.load>p.load*1.3){const pc=Math.round((a.load/p.load-1)*100);T("warn",`Zátěž vzrostla o ${pc} % oproti minulému období. Při takovém skoku víc dbej na spánek a regeneraci.`,`Zátěž vzrostla o ${pc} % proti minulému období.`)}
+  if(a.rpe>=8.5)T("warn",`Tréninky hodnotíš jako velmi náročné (ø ${dec(a.rpe)}/10). Zařaď i lehčí jednotky.`,`Tréninky hodnotí jako velmi náročné (ø ${dec(a.rpe)}/10).`);
+  if(ids.length>=7&&a.days>=5&&a.rest===0&&(a.sandN+a.gymN)>=5)T("warn",`Neměla jsi žádný den volna. I odpočinek je součást tréninku.`,`Neměla žádný den volna.`);
+  if(a.days){const pct=a.meals/(a.days*5);
+    if(pct<0.85){const miss={};for(const id of ids){const d=getDay(id);if(!hasData(d))continue;for(const [k,l] of MEALS)if(!ate(d.meals?.[k]))miss[l]=(miss[l]||0)+1}
+      const top=Object.entries(miss).sort((x,y)=>y[1]-x[1])[0];
+      T(pct<0.6?"bad":"warn",`Vynecháváš jídla (${Math.round(pct*100)} % jídel).${top?` Nejčastěji ${top[0].toLowerCase()}.`:""} Pravidelné jídlo je palivo na trénink.`,`Vynechává jídla (${Math.round(pct*100)} %)${top?`, nejčastěji ${top[0].toLowerCase()}`:""}.`)}}
+  if(!out.some(x=>x.l==="bad"||x.l==="warn")&&a.days>=need)T("good",`Vypadá to vyrovnaně – spánek, únava i jídlo jsou v pořádku. Jen tak dál!`,`Vše v normě.`);
+  return out;
+}
+function tipsBlock(list,title){
+  if(!list.length)return "";
+  return `<section class="blk tipsblk"><h2>${title||"Rady"}</h2><ul class="tips">${list.map(x=>`<li class="tp-${x.l}"><span class="tp-dot" aria-hidden="true"></span><span>${x.t}</span></li>`).join("")}</ul></section>`;
+}
+
 /* ---------- WEEK ---------- */
 
 function renderWeek(force){
@@ -739,6 +777,7 @@ function renderWeek(force){
     <div class="lbl">${isoWeek(s)}. týden<div class="sub" style="font-family:var(--f-body);font-weight:400;font-size:13px;text-transform:none;color:var(--muted)">${s.getDate()}. ${MONTHS_G[s.getMonth()]} – ${e.getDate()}. ${MONTHS_G[e.getMonth()]} ${e.getFullYear()}${rv.rating?` · hodnocení <span class="pill f${rv.rating}">${rv.rating}</span> ${RATE[rv.rating]}`:""}</div></div>
     <button class="icon" id="wn" aria-label="Další týden">›</button></div>
   ${tiles(a,7,rv.recov||[])}
+  ${tipsBlock(tips(ids,[...Array(7)].map((_,i)=>key(addDays(s,i-7))),!isCoach),isCoach?"Na co se zaměřit":"Rady na tento týden")}
   <div class="tbl days"><table><thead><tr><th>Den</th><th>Spánek</th><th>Trénink na písku</th><th>Posilovna</th><th>Připravenost</th><th>Únava</th><th>Stres</th><th>Jídla</th></tr></thead>
   <tbody>${rows}</tbody>
   </table></div>
@@ -794,6 +833,7 @@ function renderMonth(){
   <div class="rangebar"><button class="icon" id="mp" aria-label="Předchozí měsíc">‹</button>
     <div class="lbl">${MONTHS[m-1]} ${y}</div><button class="icon" id="mn" aria-label="Další měsíc">›</button></div>
   ${tiles(a,n,[...new Set(wk.flatMap(w=>getWeek(key(w.s))?.recov||[]))])}
+  ${tipsBlock(tips(ids,[...Array(new Date(y,m-1,0).getDate())].map((_,i)=>key(new Date(y,m-2,i+1))),!isCoach),isCoach?"Na co se zaměřit":"Rady na tento měsíc")}
   <h3 class="sec">Po týdnech</h3>
   <div class="tbl"><table><thead><tr><th>Týden</th><th>Hodnocení</th><th>Spánek</th><th>Trénink na písku</th><th>Posilovna</th><th>Zátěž</th><th>Připravenost</th><th>Únava</th><th>Stres</th><th>Jídla</th><th>Zapsáno</th></tr></thead>
   <tbody>${wk.map(w=>`<tr data-w="${key(w.s)}"><td>${isoWeek(w.s)}. (${parse(w.ids[0]).getDate()}.–${parse(w.ids[w.ids.length-1]).getDate()}.)</td><td>${pill(getWeek(key(w.s))?.rating||0)}</td><td>${w.a.sl?"ø "+fmtH(w.a.sl):"–"}</td><td>${nx(w.a.sandN,w.a.sandMin)}</td><td>${nx(w.a.gymN,w.a.gymMin)}</td><td>${ld(w.a.load)}</td><td>${pill(w.a.m)}</td><td>${pill(w.a.e,1)}</td><td>${pill(w.a.st,1)}</td><td>${w.a.meals}/${w.ids.length*5}</td><td>${w.a.days}/${w.ids.length}</td></tr>`).join("")}</tbody>
@@ -872,6 +912,7 @@ function renderCoach(){
   <div class="rangebar" id="tdBar" ${state.teamMode==="d"?"":"hidden"}><button class="icon" id="tdp" aria-label="Předchozí den">‹</button><div class="lbl" id="tdLbl"></div><button class="icon" id="tdn" aria-label="Další den">›</button></div>
   <div class="rangebar" id="tmBar" ${state.teamMode==="m"?"":"hidden"}><button class="icon" id="tmp" aria-label="Předchozí měsíc">‹</button><div class="lbl" id="tmLbl"></div><button class="icon" id="tmn" aria-label="Další měsíc">›</button></div>
   <div id="teamTbl"><p class="note">Načítám hráčky…</p></div>
+  <div id="teamTips"></div>
   <div id="coachCharts"></div>
   <h3 class="sec">Všechny týdny · ${esc(pname(selPid))}</h3>
   ${ws.length?`<div class="tbl"><table><thead><tr><th>Týden</th><th>Hodnocení</th><th>ø Spánek</th><th>Trénink na písku</th><th>Posilovna</th><th>Zátěž</th><th>Připravenost</th><th>Únava</th><th>Stres</th><th>Volno</th><th>Jídla</th><th>Zapsáno</th></tr></thead><tbody>${rows}</tbody></table></div>
@@ -935,11 +976,11 @@ async function renderTeam(){
   const token=Symbol(); renderTeam.tok=token;
   const rows=[], stats=[];
   for(const p of players){let o;try{o=await fetchAll(p.id)}catch(e){continue}
-    const saveD=docs,saveDirty={...dirty};docs=o.days;for(const k in dirty)delete dirty[k];const a=agg(last);docs=saveD;Object.assign(dirty,saveDirty);
+    const saveD=docs,saveDirty={...dirty};docs=o.days;for(const k in dirty)delete dirty[k];const a=agg(last);const tp=tips(last,last.map(id=>key(addDays(parse(id),-last.length))),false).filter(x=>x.l!=="info");docs=saveD;Object.assign(dirty,saveDirty);
     const ld0=Object.keys(o.days).sort().pop();
     const rs=Object.entries(o.weeks).filter(([w])=>last.includes(w)||last.includes(key(addDays(parse(w),6)))).map(([,w])=>w.rating).filter(Boolean);
     const rt=rs.length?rs.reduce((x,y)=>x+y,0)/rs.length:0;
-    stats.push({p,a,o});
+    stats.push({p,a,o,tp});
     if(isD){const d=o.days[last[0]];
       rows.push(hasData(d)?`<tr data-pid="${esc(p.id)}"><td>${esc(pname(p.id))}</td><td>${d.sleep?fmtH(d.sleep):"–"} ${d.sleepQ?pill(d.sleepQ):""}</td><td>${pill(d.morning)}</td><td>${pill(d.fatigue,1)}</td><td>${pill(d.stress,1)}</td><td>${cell(d,"sand")}</td><td>${cell(d,"gym")}</td><td>${mealsCount(d)}/5</td><td>${(d.note||"").trim()?esc(d.note):"–"}</td></tr>`
         :`<tr data-pid="${esc(p.id)}"><td>${esc(pname(p.id))}</td><td class="empty" colspan="8" style="text-align:center">nevyplnila</td></tr>`);continue}
@@ -954,6 +995,8 @@ async function renderTeam(){
   }else
   el2.innerHTML=`<div class="tbl"><table><thead><tr><th>Hráčka</th><th>Zapsáno</th><th>ø Spánek</th><th>Trénink na písku</th><th>Posilovna</th><th>Zátěž</th><th>Volno</th><th>Jídla</th><th>Připravenost</th><th>Únava</th><th>Stres</th>${isM?"<th>Hodnocení týdnů</th>":""}<th>Poslední zápis</th></tr></thead><tbody>${rows.join("")}</tbody></table></div><p class="note">Klepnutím na hráčku přepneš celou aplikaci na její deník.</p>`;
   if(!isD)el2.querySelectorAll("[data-pid]").forEach(r=>r.onclick=()=>{$("#psel").value=r.dataset.pid;selectPlayer(r.dataset.pid)});
+  const tw=$("#teamTips");if(tw){const any=stats.filter(x=>x.tp.some(t=>t.l!=="good"));
+    tw.innerHTML=stats.length?`<section class="blk tipsblk"><h2>Na co se zaměřit</h2>${any.length?any.map(x=>`<div class="tp-player"><b>${esc(pname(x.p.id))}</b><ul class="tips">${x.tp.filter(t=>t.l!=="good").map(t=>`<li class="tp-${t.l}"><span class="tp-dot" aria-hidden="true"></span><span>${t.t}</span></li>`).join("")}</ul></div>`).join(""):`<p class="note" style="margin:0">Všechny hráčky jsou v normě.</p>`}</section>`:""}
   const cc=$("#coachCharts"); if(cc)cc.innerHTML=coachCharts(stats,isD?$("#tdLbl").textContent:isM?MONTHS[Number(state.teamMonth.split("-")[1])-1]:"posledních 7 dní",last);
 }
 const PCOL=["var(--accent)","var(--feel)","var(--gym)","var(--food)","var(--sleep)","var(--sand)","var(--rec)","var(--bad)"];
